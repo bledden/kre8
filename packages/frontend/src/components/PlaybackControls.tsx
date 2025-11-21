@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Play, Square, Download, Volume2 } from 'lucide-react';
 import { useAppStore } from '../stores/appStore';
 import { executeCode, stopAll, setTempo } from '../services/strudelService';

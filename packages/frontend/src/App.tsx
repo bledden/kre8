@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Header from './components/Header';
 import InputPanel from './components/InputPanel';
 import CodePanel from './components/CodePanel';
@@ -6,7 +5,7 @@ import PlaybackControls from './components/PlaybackControls';
 import { useAppStore } from './stores/appStore';
 
 function App() {
-  const { currentCode, isLoading, error } = useAppStore();
+  const { currentCode, error } = useAppStore();
 
   return (
     <div className="min-h-screen bg-gray-900">

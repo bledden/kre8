@@ -1,13 +1,6 @@
 // Strudel integration - will be dynamically imported
 import { StrudelCode } from '@kre8/shared';
 
-// Type declaration for @strudel/web (no types available)
-declare module '@strudel/web' {
-  export function repl(options?: any): Promise<any>;
-  export function getAudioContext(): AudioContext | null;
-  export function evaluate(code: string): Promise<any>;
-}
-
 let strudelRepl: any = null;
 let strudelModule: any = null;
 

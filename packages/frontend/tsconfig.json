@@ -22,7 +22,7 @@
       "@kre8/shared": ["../shared/src"]
     }
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src", "../shared/src"],
+  "references": [{ "path": "./tsconfig.node.json" }, { "path": "../shared" }]
 }
 

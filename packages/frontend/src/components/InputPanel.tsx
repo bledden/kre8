@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { Mic, Upload, Send, Loader2 } from 'lucide-react';
 import { useAppStore } from '../stores/appStore';
 import { musicApi, transcriptionApi } from '../services/api';
-import { startRecording, stopRecording, isRecording } from '../services/audioRecorder';
+import { startRecording, stopRecording } from '../services/audioRecorder';
 import { executeCode } from '../services/strudelService';
 
 export default function InputPanel() {

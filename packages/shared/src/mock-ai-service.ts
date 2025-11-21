@@ -31,7 +31,7 @@ export class MockAIService implements IAIService {
   async generateMusicCode(
     prompt: SanitizedPrompt,
     config?: Partial<EnhancedMusicConfig>,
-    options?: GenerationOptions
+    _options?: GenerationOptions
   ): Promise<Result<GenerationResult>> {
     // Simulate network delay
     await this.delay(this.mockDelay);
@@ -69,7 +69,7 @@ stack(
   async refineCode(
     currentCode: BrandedStrudelCode,
     refinementPrompt: SanitizedPrompt,
-    options?: GenerationOptions
+    _options?: GenerationOptions
   ): Promise<Result<GenerationResult>> {
     await this.delay(this.mockDelay);
 
@@ -92,7 +92,7 @@ stack(
   }
 
   async transcribeAudio(
-    audio: Blob | File,
+    _audio: Blob | File,
     options?: TranscriptionOptions
   ): Promise<Result<EnhancedTranscriptionResult>> {
     await this.delay(this.mockDelay);
@@ -105,8 +105,8 @@ stack(
   }
 
   async *streamMusicCode(
-    prompt: SanitizedPrompt,
-    config?: Partial<EnhancedMusicConfig>
+    _prompt: SanitizedPrompt,
+    _config?: Partial<EnhancedMusicConfig>
   ): AsyncGenerator<CodeFragment, GenerationResult, undefined> {
     const fullCode = `s("bd sd").fast(2)`;
 
