@@ -1,0 +1,50 @@
+{
+  "name": "kre8",
+  "version": "0.1.0",
+  "description": "Voice-activated live coding music web app",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd packages/backend && npm run dev",
+    "dev:frontend": "cd packages/frontend && npm run dev",
+    "build": "npm run build:shared && npm run build:backend && npm run build:frontend",
+    "build:shared": "cd packages/shared && npm run build",
+    "build:backend": "cd packages/backend && npm run build",
+    "build:frontend": "cd packages/frontend && npm run build",
+    "start": "cd packages/backend && npm start",
+    "lint": "eslint . --ext .ts,.tsx",
+    "type-check": "tsc --noEmit --project packages/shared/tsconfig.json --project packages/backend/tsconfig.json",
+    "test": "vitest",
+    "test:unit": "vitest run packages",
+    "test:integration": "vitest run tests/integration",
+    "test:prompts": "vitest run tests/prompts",
+    "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui",
+    "test:watch": "vitest watch"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "@vitest/ui": "^4.0.12",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.54.0",
+    "msw": "^2.12.2",
+    "nock": "^14.0.10",
+    "playwright": "^1.56.1",
+    "supertest": "^7.1.4",
+    "typescript": "^5.3.2",
+    "vitest": "^4.0.12"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=9.0.0"
+  }
+}

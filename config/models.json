@@ -1,0 +1,24 @@
+[
+  {
+    "name": "anthropic/claude-3.5-sonnet",
+    "provider": "anthropic",
+    "maxTokens": 2000,
+    "temperature": 0.7,
+    "topP": 0.9
+  },
+  {
+    "name": "openai/gpt-4-turbo",
+    "provider": "openai",
+    "maxTokens": 2000,
+    "temperature": 0.7,
+    "topP": 0.9
+  },
+  {
+    "name": "google/gemini-pro",
+    "provider": "google",
+    "maxTokens": 2000,
+    "temperature": 0.7,
+    "topP": 0.9
+  }
+]
+

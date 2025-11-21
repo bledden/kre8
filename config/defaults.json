@@ -1,0 +1,12 @@
+{
+  "tempo": 120,
+  "scale": "major",
+  "key": "C",
+  "samples": {
+    "bd": "https://strudel.tidalcycles.org/samples/bd.wav",
+    "sd": "https://strudel.tidalcycles.org/samples/sd.wav",
+    "hh": "https://strudel.tidalcycles.org/samples/hh.wav",
+    "sn": "https://strudel.tidalcycles.org/samples/sn.wav"
+  }
+}
+
