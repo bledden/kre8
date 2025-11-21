@@ -318,9 +318,16 @@ export function validateStrudelCode(code: string): Result<BrandedStrudelCode, Va
 }
 
 /**
+ * Input type for validateMusicConfig that allows flexible samples type
+ */
+type MusicConfigInput = Omit<Partial<EnhancedMusicConfig>, 'samples'> & {
+  samples?: ReadonlyMap<string, string> | Record<string, string>;
+};
+
+/**
  * Validate music configuration
  */
-export function validateMusicConfig(config: Partial<EnhancedMusicConfig>): Result<EnhancedMusicConfig, ValidationError> {
+export function validateMusicConfig(config: MusicConfigInput): Result<EnhancedMusicConfig, ValidationError> {
   if (config.tempo !== undefined && (config.tempo < 20 || config.tempo > 300)) {
     return Err({
       type: 'validation_error',
