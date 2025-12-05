@@ -19,6 +19,30 @@
     "maxTokens": 2000,
     "temperature": 0.7,
     "topP": 0.9
+  },
+  {
+    "name": "x-ai/grok-beta",
+    "provider": "x-ai",
+    "maxTokens": 2000,
+    "temperature": 0.7,
+    "topP": 0.9,
+    "note": "Grok Beta model via OpenRouter (if available)"
+  },
+  {
+    "name": "x-ai/grok-2",
+    "provider": "x-ai",
+    "maxTokens": 2000,
+    "temperature": 0.7,
+    "topP": 0.9,
+    "note": "Grok 2 model via OpenRouter (if available)"
+  },
+  {
+    "name": "x-ai/grok-2-1212",
+    "provider": "x-ai",
+    "maxTokens": 2000,
+    "temperature": 0.7,
+    "topP": 0.9,
+    "note": "Grok 2 1212 model via OpenRouter (if available)"
   }
 ]
 

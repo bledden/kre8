@@ -171,6 +171,35 @@ OPENROUTER_MODEL=mistral/mistral-large
 
 ---
 
+#### 8. **xAI Grok Models** (Grok Beta / Grok 2)
+```bash
+# Try these model names (availability depends on OpenRouter):
+OPENROUTER_MODEL=x-ai/grok-beta
+# OR
+OPENROUTER_MODEL=x-ai/grok-2
+# OR
+OPENROUTER_MODEL=x-ai/grok-2-1212
+```
+
+**Pros**:
+- ✅ Fast inference (especially Grok-2 variants)
+- ✅ Good reasoning capabilities
+- ✅ Recent training data
+- ✅ Competitive pricing (if available via OpenRouter)
+
+**Cons**:
+- ❌ Availability on OpenRouter may vary (check https://openrouter.ai/models)
+- ❌ Less proven for code generation tasks
+- ❌ May need prompt tuning for Strudel syntax
+
+**Expected Performance**: Unknown for Strudel specifically. Grok models are known for fast responses and good reasoning, but may need more examples in prompts for code generation.
+
+**Note**: If Grok models aren't available on OpenRouter, you can use xAI's API directly, but this would require modifying `packages/backend/src/services/aiService.ts` to support xAI's API endpoint.
+
+**To check availability**: Visit https://openrouter.ai/models and search for "grok" or "x-ai"
+
+---
+
 ## Testing Methodology
 
 ### Standard Test Suite
