@@ -48,11 +48,22 @@ musicRoutes.post('/generate', async (req, res, next) => {
  * Check music generation service health
  */
 musicRoutes.get('/health', (req, res) => {
+  const useXAI = !!process.env.XAI_API_KEY;
+  const useOpenRouter = !!process.env.OPENROUTER_API_KEY;
+  
   res.json({
     success: true,
     service: 'music-generation',
     mode: USE_MOCK_AI ? 'mock' : 'real',
-    configured: USE_MOCK_AI || !!process.env.OPENROUTER_API_KEY,
+    provider: USE_MOCK_AI ? 'mock' : (useXAI ? 'xai' : (useOpenRouter ? 'openrouter' : 'none')),
+    configured: USE_MOCK_AI || useXAI || useOpenRouter,
+    model: USE_MOCK_AI 
+      ? 'mock' 
+      : (useXAI 
+        ? process.env.XAI_MODEL || 'grok-beta'
+        : (useOpenRouter 
+          ? process.env.OPENROUTER_MODEL || 'anthropic/claude-3.5-sonnet'
+          : 'none')),
   });
 });
 

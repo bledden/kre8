@@ -16,6 +16,15 @@ const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || 'anthropic/claude-3.5-sonnet';
 const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
+// xAI/Grok API configuration
+const XAI_API_KEY = process.env.XAI_API_KEY;
+const XAI_MODEL = process.env.XAI_MODEL || 'grok-beta';
+const XAI_BASE_URL = 'https://api.x.ai/v1/chat/completions';
+
+// Determine which API to use (xAI takes precedence if configured)
+const USE_XAI = !!XAI_API_KEY;
+const AI_PROVIDER = USE_XAI ? 'xai' : 'openrouter';
+
 interface OpenRouterMessage {
   role: 'system' | 'user' | 'assistant';
   content: string;
@@ -44,7 +53,11 @@ interface OpenRouterResponse {
 export async function generateMusicCode(
   request: GenerationRequest
 ): Promise<StrudelCode> {
-  if (!OPENROUTER_API_KEY) {
+  // Check API key based on provider
+  if (USE_XAI && !XAI_API_KEY) {
+    throw new Error('XAI_API_KEY not configured');
+  }
+  if (!USE_XAI && !OPENROUTER_API_KEY) {
     throw new Error('OPENROUTER_API_KEY not configured');
   }
 
@@ -84,22 +97,34 @@ export async function generateMusicCode(
       { role: 'user', content: userMessage },
     ];
 
+    // Determine API endpoint and configuration
+    const apiUrl = USE_XAI ? XAI_BASE_URL : OPENROUTER_BASE_URL;
+    const apiKey = USE_XAI ? XAI_API_KEY : OPENROUTER_API_KEY;
+    const model = USE_XAI ? XAI_MODEL : OPENROUTER_MODEL;
+
+    // Build headers (xAI uses simpler headers than OpenRouter)
+    const headers: Record<string, string> = {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    };
+
+    // OpenRouter-specific headers
+    if (!USE_XAI) {
+      headers['HTTP-Referer'] = process.env.APP_URL || 'http://localhost:3001';
+      headers['X-Title'] = 'Kre8 Music Generator';
+    }
+
     // Make API request
     const response = await axios.post<OpenRouterResponse>(
-      OPENROUTER_BASE_URL,
+      apiUrl,
       {
-        model: OPENROUTER_MODEL,
+        model,
         messages,
         temperature: 0.7,
         max_tokens: 2000,
       },
       {
-        headers: {
-          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': process.env.APP_URL || 'http://localhost:3001',
-          'X-Title': 'Kre8 Music Generator',
-        },
+        headers,
         timeout: 30000,
       }
     );

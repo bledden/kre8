@@ -6,9 +6,78 @@ This guide explains how to configure the kre8 project to use xAI's Grok models.
 
 The project currently uses **Anthropic Claude 3.5 Sonnet** as the default model, configured via the `OPENROUTER_MODEL` environment variable.
 
-## Option 1: Using Grok via OpenRouter (Recommended)
+## ✅ Option 1: Using xAI API Directly (Recommended for Developer Console Users)
 
-If OpenRouter supports Grok models, this is the easiest approach as it requires no code changes.
+**If you have xAI Developer Console access with credits, this is the best option!**
+
+The project now supports direct xAI API integration. No code changes needed - just configure environment variables.
+
+### Step 1: Get Your xAI API Key
+
+1. Visit [xAI Developer Console](https://console.x.ai)
+2. Sign in with your account
+3. Navigate to API Keys section
+4. Generate a new API key
+5. Copy the key (starts with `xai-...`)
+
+### Step 2: Configure Environment Variables
+
+Edit your `.env` file:
+
+```bash
+# Add these lines:
+XAI_API_KEY=xai-your_api_key_here
+XAI_MODEL=grok-beta
+
+# Comment out or remove OpenRouter config (optional - xAI takes precedence)
+# OPENROUTER_API_KEY=...
+```
+
+**Available Grok Models**:
+- `grok-beta` - Beta version (recommended)
+- `grok-2` - Latest Grok 2 model
+- `grok-2-1212` - Specific Grok 2 variant
+- `grok-2-vision-1212` - Grok 2 with vision capabilities
+
+### Step 3: Restart Backend
+
+```bash
+npm run dev:backend
+# OR if running both:
+npm run dev
+```
+
+### Step 4: Verify Configuration
+
+Check the health endpoint:
+
+```bash
+curl http://localhost:3001/api/music/health
+```
+
+You should see:
+```json
+{
+  "success": true,
+  "service": "music-generation",
+  "mode": "real",
+  "provider": "xai",
+  "configured": true,
+  "model": "grok-beta"
+}
+```
+
+### Step 5: Test
+
+Try generating music with a simple prompt:
+- "Create a simple drum beat"
+- "Make a house track at 125 BPM"
+
+---
+
+## Option 2: Using Grok via OpenRouter
+
+If you prefer to use OpenRouter (or if you don't have direct xAI access), you can use Grok models through OpenRouter.
 
 ### Step 1: Check Model Availability
 
@@ -43,36 +112,17 @@ Try generating music with a simple prompt to verify it works:
 - "Create a simple drum beat"
 - "Make a house track at 125 BPM"
 
-## Option 2: Using xAI API Directly
+## How It Works
 
-If Grok models aren't available on OpenRouter, you can use xAI's API directly. This requires code modifications.
+The project automatically detects which API to use based on environment variables:
 
-### Step 1: Get xAI API Key
+1. **If `XAI_API_KEY` is set**: Uses xAI API directly (fastest, uses your credits)
+2. **Otherwise, if `OPENROUTER_API_KEY` is set**: Uses OpenRouter API
+3. **Otherwise**: Falls back to mock service (if `USE_MOCK_AI=true`)
 
-1. Visit [xAI Console](https://console.x.ai)
-2. Sign up or log in
-3. Generate an API key
-4. Note: Billing activation may be required
+**Priority**: xAI > OpenRouter > Mock
 
-### Step 2: Add Environment Variable
-
-Add to your `.env` file:
-
-```bash
-XAI_API_KEY=your_xai_api_key_here
-XAI_MODEL=grok-beta  # or grok-2, grok-2-1212, etc.
-```
-
-### Step 3: Modify AI Service
-
-You would need to modify `packages/backend/src/services/aiService.ts` to add support for xAI's API endpoint. The xAI API uses a similar format to OpenAI:
-
-```typescript
-// Example xAI API endpoint
-const XAI_API_URL = 'https://api.x.ai/v1/chat/completions';
-```
-
-**Note**: This requires implementing a new service or modifying the existing one to support both OpenRouter and xAI APIs.
+This means if you set both `XAI_API_KEY` and `OPENROUTER_API_KEY`, xAI will be used.
 
 ## Model Comparison
 
@@ -118,10 +168,12 @@ If Grok produces lower quality code:
 
 ## Current Status
 
+✅ **Direct xAI API integration complete** - No code changes needed!  
 ✅ **Grok models added to `config/models.json`**  
 ✅ **Environment variable configuration ready**  
-⏳ **Testing needed** - Verify model names work with OpenRouter  
-⏳ **Direct xAI API integration** - Requires code changes if OpenRouter doesn't support Grok
+✅ **Automatic provider detection** - xAI takes precedence over OpenRouter  
+✅ **Health endpoint shows active provider**  
+⏳ **Testing needed** - Test with your xAI Developer Console credits
 
 ## Next Steps
 
