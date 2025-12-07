@@ -2,6 +2,8 @@
 
 Quick reference to all project documentation files.
 
+**📁 Documentation Structure**: All documentation is now organized in the `docs/` directory by category. See [docs/README.md](docs/README.md) for the complete structure.
+
 ---
 
 ## 🚀 Getting Started
@@ -9,8 +11,9 @@ Quick reference to all project documentation files.
 | Document | Purpose | Read Time |
 |----------|---------|-----------|
 | [README.md](README.md) | Main project overview and setup instructions | 10 min |
-| [QUICK_START.md](QUICK_START.md) | Quick start for Claude (prompt engineering focus) | 3 min |
-| [SETUP.md](SETUP.md) | Detailed setup and development guide | 15 min |
+| [docs/getting-started/QUICK_START.md](docs/getting-started/QUICK_START.md) | Quick start for Claude (prompt engineering focus) | 3 min |
+| [docs/getting-started/SETUP.md](docs/getting-started/SETUP.md) | Detailed setup and development guide | 15 min |
+| [docs/getting-started/XAI_QUICK_START.md](docs/getting-started/XAI_QUICK_START.md) | xAI/Grok setup guide | 5 min |
 
 **Start here if**: You're new to the project → Read [README.md](README.md) first.
 
@@ -20,13 +23,15 @@ Quick reference to all project documentation files.
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
-| [CLAUDE_HANDOFF.md](CLAUDE_HANDOFF.md) | Composer's handoff to Claude with complete file inventory | Claude |
-| [HANDOFF_SUMMARY.md](HANDOFF_SUMMARY.md) | Claude's original handoff summary for Composer | Composer |
-| [CLAUDE_PHASE2_COMPLETE.md](CLAUDE_PHASE2_COMPLETE.md) | Claude's Phase 2 completion summary | Both |
+| [docs/handoffs/CLAUDE_HANDOFF.md](docs/handoffs/CLAUDE_HANDOFF.md) | Composer's handoff to Claude with complete file inventory | Claude |
+| [docs/handoffs/HANDOFF_SUMMARY.md](docs/handoffs/HANDOFF_SUMMARY.md) | Claude's original handoff summary for Composer | Composer |
+| [docs/handoffs/CLAUDE_PHASE2_COMPLETE.md](docs/handoffs/CLAUDE_PHASE2_COMPLETE.md) | Claude's Phase 2 completion summary | Both |
+| [docs/handoffs/PHASE2_INTEGRATION.md](docs/handoffs/PHASE2_INTEGRATION.md) | Phase 2 integration details | Both |
+| [docs/handoffs/STATUS_COMPARISON.md](docs/handoffs/STATUS_COMPARISON.md) | Status comparison analysis | Both |
 
 **Start here if**:
-- Composer needs to catch up → Read [CLAUDE_HANDOFF.md](CLAUDE_HANDOFF.md)
-- Claude needs context → Read [QUICK_START.md](QUICK_START.md)
+- Composer needs to catch up → Read [docs/handoffs/CLAUDE_HANDOFF.md](docs/handoffs/CLAUDE_HANDOFF.md)
+- Claude needs context → Read [docs/getting-started/QUICK_START.md](docs/getting-started/QUICK_START.md)
 
 ---
 
@@ -34,11 +39,12 @@ Quick reference to all project documentation files.
 
 | Document | Purpose | Read Time |
 |----------|---------|-----------|
-| [ARCHITECTURE.md](ARCHITECTURE.md) | Complete technical architecture and design decisions | 30 min |
-| [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md) | High-level project summary | 5 min |
-| [GIT_COMMIT_SUMMARY.md](GIT_COMMIT_SUMMARY.md) | Git commit history and changelog | 5 min |
+| [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md) | Complete technical architecture and design decisions | 30 min |
+| [docs/architecture/PROJECT_SUMMARY.md](docs/architecture/PROJECT_SUMMARY.md) | High-level project summary | 5 min |
+| [docs/architecture/CODEBASE_EVALUATION.md](docs/architecture/CODEBASE_EVALUATION.md) | Code quality and architecture evaluation | 20 min |
+| [docs/status/GIT_COMMIT_SUMMARY.md](docs/status/GIT_COMMIT_SUMMARY.md) | Git commit history and changelog | 5 min |
 
-**Start here if**: You need to understand the technical implementation → [ARCHITECTURE.md](ARCHITECTURE.md)
+**Start here if**: You need to understand the technical implementation → [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md)
 
 ---
 
@@ -60,101 +66,102 @@ Quick reference to all project documentation files.
 
 | Document | Purpose | Status |
 |----------|---------|--------|
-| **[TESTING_SUMMARY.md](TESTING_SUMMARY.md)** | **Testing overview - START HERE** | ✅ Complete |
-| [TESTING_QUICK_START.md](TESTING_QUICK_START.md) | Quick reference for automated tests (`npm test`) | ✅ Complete |
-| [TESTING_PLAN.md](TESTING_PLAN.md) | Complete technical testing plan (unit, integration, E2E) | ✅ Complete |
-| [PROMPT_QUALITY_TESTING_PLAN.md](PROMPT_QUALITY_TESTING_PLAN.md) | Manual AI prompt testing (27 prompts, scoring rubrics) | ✅ Ready |
-| [MODEL_TESTING_GUIDE.md](MODEL_TESTING_GUIDE.md) | Systematic model comparison (7 models, cost analysis) | ✅ Ready |
-| [PROMPT_OPTIMIZATION_LOG.md](PROMPT_OPTIMIZATION_LOG.md) | Track prompt iterations, testing results, improvements | ✅ Framework ready |
+| **[docs/testing/TESTING_SUMMARY.md](docs/testing/TESTING_SUMMARY.md)** | **Testing overview - START HERE** | ✅ Complete |
+| [docs/testing/TESTING_QUICK_START.md](docs/testing/TESTING_QUICK_START.md) | Quick reference for automated tests (`npm test`) | ✅ Complete |
+| [docs/testing/TESTING_PLAN.md](docs/testing/TESTING_PLAN.md) | Complete technical testing plan (unit, integration, E2E) | ✅ Complete |
+| [docs/testing/PROMPT_QUALITY_TESTING_PLAN.md](docs/testing/PROMPT_QUALITY_TESTING_PLAN.md) | Manual AI prompt testing (27 prompts, scoring rubrics) | ✅ Ready |
+| [docs/testing/MODEL_TESTING_GUIDE.md](docs/testing/MODEL_TESTING_GUIDE.md) | Systematic model comparison (7 models, cost analysis) | ✅ Ready |
+| [docs/testing/PROMPT_OPTIMIZATION_LOG.md](docs/testing/PROMPT_OPTIMIZATION_LOG.md) | Track prompt iterations, testing results, improvements | ✅ Framework ready |
 
-**Start here if**: You're testing → Read [TESTING_SUMMARY.md](TESTING_SUMMARY.md) to navigate all testing docs.
+**Start here if**: You're testing → Read [docs/testing/TESTING_SUMMARY.md](docs/testing/TESTING_SUMMARY.md) to navigate all testing docs.
 
 ---
 
-## 📁 Quick File Reference
+## 🔧 Integration & Planning
 
-### Root Configuration
+| Document | Purpose | Status |
+|----------|---------|--------|
+| [docs/integration/INTEGRATION_PLAN.md](docs/integration/INTEGRATION_PLAN.md) | Integration strategy and approach | ✅ Complete |
+| [docs/integration/INTEGRATION_SUMMARY.md](docs/integration/INTEGRATION_SUMMARY.md) | Integration summary | ✅ Complete |
+| [docs/integration/INTEGRATION_COMPLETE.md](docs/integration/INTEGRATION_COMPLETE.md) | Integration completion status | ✅ Complete |
+| [docs/planning/IMPLEMENTATION_PLAN.md](docs/planning/IMPLEMENTATION_PLAN.md) | Complete implementation plan (25 improvements) | ✅ Complete |
+| [docs/planning/CONTEXT_GAPS_ANALYSIS.md](docs/planning/CONTEXT_GAPS_ANALYSIS.md) | Context-aware generation gap analysis | ✅ Complete |
+| [docs/planning/ACTION_PLAN.md](docs/planning/ACTION_PLAN.md) | Action items and tasks | ✅ Complete |
+
+---
+
+## 📈 Project Status
+
+| Document | Purpose |
+|----------|---------|
+| [docs/status/PROJECT_STATUS.md](docs/status/PROJECT_STATUS.md) | Current project status and capabilities |
+| [docs/status/GIT_COMMIT_SUMMARY.md](docs/status/GIT_COMMIT_SUMMARY.md) | Git commit history and changelog |
+| [docs/status/DEPENDENCY_FIXES.md](docs/status/DEPENDENCY_FIXES.md) | Dependency fixes log |
+
+---
+
+## 🔌 Setup Guides
+
+| Document | Purpose |
+|----------|---------|
+| [docs/setup/GROK_SETUP.md](docs/setup/GROK_SETUP.md) | Grok model setup guide |
+
+---
+
+## 📁 Documentation Structure
+
 ```
 kre8/
-├── README.md                          # Main documentation
-├── ARCHITECTURE.md                    # Technical architecture
-├── SETUP.md                           # Setup guide
-├── QUICK_START.md                     # Quick start for Claude
-├── DOCUMENTATION_INDEX.md             # This file
-├── package.json                       # Monorepo workspace
-├── tsconfig.json                      # TypeScript root config
-├── .gitignore                         # Git ignore
-├── .eslintrc.json                     # ESLint config
-├── docker-compose.yml                 # Docker local dev
-├── Dockerfile                         # Production build
-└── .env                               # Environment variables (not in git)
-```
-
-### Prompt Configuration (Your Primary Work Area)
-```
-config/
-├── defaults.json                      # Default music parameters
-├── models.json                        # AI models configuration
-└── prompts/
-    ├── music_generation.txt           # Main generation prompt ⭐
-    ├── refinement.txt                 # Refinement prompt ⭐
-    └── few_shot_examples.json         # Example pairs ⭐
-```
-
-### Shared Types
-```
-packages/shared/
-└── src/
-    ├── types.ts                       # Core TypeScript interfaces
-    ├── schemas.ts                     # Zod validation schemas
-    └── index.ts                       # Package exports
-```
-
-### Backend
-```
-packages/backend/
-└── src/
-    ├── server.ts                      # Express server
-    ├── routes/
-    │   ├── music.ts                   # Music generation endpoint
-    │   ├── transcription.ts           # Speech-to-text endpoint
-    │   └── config.ts                  # Config endpoints
-    ├── services/
-    │   ├── aiService.ts               # OpenRouter integration ⭐
-    │   ├── whisperService.ts          # Whisper API
-    │   └── configLoader.ts            # Loads prompt templates ⭐
-    └── middleware/
-        ├── rateLimiter.ts             # Rate limiting
-        └── errorHandler.ts            # Error handling
-```
-
-### Frontend
-```
-packages/frontend/
-└── src/
-    ├── App.tsx                        # Main app component
-    ├── stores/appStore.ts             # Zustand state
-    ├── services/
-    │   ├── api.ts                     # API client
-    │   ├── strudelService.ts          # Strudel audio engine
-    │   └── audioRecorder.ts           # Audio recording
-    └── components/
-        ├── Header.tsx                 # App header
-        ├── InputPanel.tsx             # Input controls
-        ├── CodePanel.tsx              # CodeMirror editor
-        └── PlaybackControls.tsx       # Playback controls
-```
-
-### Documentation
-```
-docs/ (or root-level .md files)
-├── CLAUDE_HANDOFF.md                  # Composer → Claude handoff
-├── HANDOFF_SUMMARY.md                 # Claude → Composer handoff
-├── CLAUDE_PHASE2_COMPLETE.md          # Phase 2 completion summary
-├── PROMPT_OPTIMIZATION_LOG.md         # Testing and optimization log
-├── MODEL_TESTING_GUIDE.md             # Model testing framework
-├── PROJECT_SUMMARY.md                 # Project overview
-└── GIT_COMMIT_SUMMARY.md              # Git history
+├── README.md                          # Main documentation (root)
+├── DOCUMENTATION_INDEX.md             # This file (root)
+│
+└── docs/                              # All organized documentation
+    ├── README.md                      # Documentation structure guide
+    │
+    ├── getting-started/               # Quick start guides
+    │   ├── QUICK_START.md
+    │   ├── SETUP.md
+    │   ├── PROJECT_SETUP.md
+    │   └── XAI_QUICK_START.md
+    │
+    ├── architecture/                  # Technical documentation
+    │   ├── ARCHITECTURE.md
+    │   ├── PROJECT_SUMMARY.md
+    │   └── CODEBASE_EVALUATION.md
+    │
+    ├── handoffs/                      # Collaboration handoffs
+    │   ├── CLAUDE_HANDOFF.md
+    │   ├── HANDOFF_SUMMARY.md
+    │   ├── CLAUDE_PHASE2_COMPLETE.md
+    │   ├── PHASE2_INTEGRATION.md
+    │   └── STATUS_COMPARISON.md
+    │
+    ├── integration/                   # Integration docs
+    │   ├── INTEGRATION_PLAN.md
+    │   ├── INTEGRATION_SUMMARY.md
+    │   └── INTEGRATION_COMPLETE.md
+    │
+    ├── testing/                       # Testing documentation
+    │   ├── TESTING_SUMMARY.md
+    │   ├── TESTING_QUICK_START.md
+    │   ├── TESTING_PLAN.md
+    │   ├── MODEL_TESTING_GUIDE.md
+    │   ├── PROMPT_QUALITY_TESTING_PLAN.md
+    │   └── PROMPT_OPTIMIZATION_LOG.md
+    │
+    ├── planning/                      # Planning & implementation
+    │   ├── IMPLEMENTATION_PLAN.md
+    │   ├── CONTEXT_GAPS_ANALYSIS.md
+    │   ├── ACTION_PLAN.md
+    │   └── PLAN.md
+    │
+    ├── status/                        # Project status
+    │   ├── PROJECT_STATUS.md
+    │   ├── GIT_COMMIT_SUMMARY.md
+    │   └── DEPENDENCY_FIXES.md
+    │
+    └── setup/                         # Setup guides
+        └── GROK_SETUP.md
 ```
 
 ---
@@ -164,42 +171,37 @@ docs/ (or root-level .md files)
 ### I want to...
 
 #### ...understand the project
-→ Read [README.md](README.md) → [ARCHITECTURE.md](ARCHITECTURE.md)
+→ Read [README.md](README.md) → [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md)
 
 #### ...set up the development environment
-→ Read [SETUP.md](SETUP.md)
+→ Read [docs/getting-started/SETUP.md](docs/getting-started/SETUP.md)
 
 #### ...improve prompt quality
 → Edit [config/prompts/music_generation.txt](config/prompts/music_generation.txt)
-→ Reference [PROMPT_OPTIMIZATION_LOG.md](PROMPT_OPTIMIZATION_LOG.md)
+→ Reference [docs/testing/PROMPT_OPTIMIZATION_LOG.md](docs/testing/PROMPT_OPTIMIZATION_LOG.md)
 
 #### ...add more genre examples
 → Edit [config/prompts/few_shot_examples.json](config/prompts/few_shot_examples.json)
 
 #### ...test different AI models
-→ Read [MODEL_TESTING_GUIDE.md](MODEL_TESTING_GUIDE.md)
-→ Edit `.env` → Change `OPENROUTER_MODEL`
+→ Read [docs/testing/MODEL_TESTING_GUIDE.md](docs/testing/MODEL_TESTING_GUIDE.md)
+→ Edit `.env` → Change `XAI_MODEL_CREATIVE`
 
 #### ...write and run tests
-→ Read [TESTING_PLAN.md](TESTING_PLAN.md) (complete plan)
-→ Read [TESTING_QUICK_START.md](TESTING_QUICK_START.md) (quick reference)
+→ Read [docs/testing/TESTING_PLAN.md](docs/testing/TESTING_PLAN.md) (complete plan)
+→ Read [docs/testing/TESTING_QUICK_START.md](docs/testing/TESTING_QUICK_START.md) (quick reference)
 → Run `npm test` to execute tests
 
 #### ...understand the handoff
-→ Claude: Read [CLAUDE_HANDOFF.md](CLAUDE_HANDOFF.md)
-→ Composer: Read [CLAUDE_PHASE2_COMPLETE.md](CLAUDE_PHASE2_COMPLETE.md)
+→ Claude: Read [docs/handoffs/CLAUDE_HANDOFF.md](docs/handoffs/CLAUDE_HANDOFF.md)
+→ Composer: Read [docs/handoffs/CLAUDE_PHASE2_COMPLETE.md](docs/handoffs/CLAUDE_PHASE2_COMPLETE.md)
 
-#### ...understand how prompts are loaded
-→ Read [packages/backend/src/services/configLoader.ts](packages/backend/src/services/configLoader.ts)
-→ Read [packages/backend/src/services/aiService.ts](packages/backend/src/services/aiService.ts)
+#### ...see implementation plans
+→ Read [docs/planning/IMPLEMENTATION_PLAN.md](docs/planning/IMPLEMENTATION_PLAN.md)
+→ Read [docs/planning/CONTEXT_GAPS_ANALYSIS.md](docs/planning/CONTEXT_GAPS_ANALYSIS.md)
 
-#### ...understand the API endpoints
-→ Read [packages/backend/src/routes/music.ts](packages/backend/src/routes/music.ts)
-→ Read [packages/backend/src/routes/transcription.ts](packages/backend/src/routes/transcription.ts)
-
-#### ...understand the frontend
-→ Read [packages/frontend/src/App.tsx](packages/frontend/src/App.tsx)
-→ Read [packages/frontend/src/stores/appStore.ts](packages/frontend/src/stores/appStore.ts)
+#### ...check project status
+→ Read [docs/status/PROJECT_STATUS.md](docs/status/PROJECT_STATUS.md)
 
 ---
 
@@ -208,13 +210,14 @@ docs/ (or root-level .md files)
 ### For Composer (Infrastructure Developer)
 
 **Primary Documents**:
-1. [CLAUDE_PHASE2_COMPLETE.md](CLAUDE_PHASE2_COMPLETE.md) - What Claude completed
-2. [ARCHITECTURE.md](ARCHITECTURE.md) - Technical decisions
-3. [SETUP.md](SETUP.md) - Development setup
+1. [docs/handoffs/CLAUDE_PHASE2_COMPLETE.md](docs/handoffs/CLAUDE_PHASE2_COMPLETE.md) - What Claude completed
+2. [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md) - Technical decisions
+3. [docs/getting-started/SETUP.md](docs/getting-started/SETUP.md) - Development setup
 
 **Optional**:
-- [PROMPT_OPTIMIZATION_LOG.md](PROMPT_OPTIMIZATION_LOG.md) - See what's being tested
-- [MODEL_TESTING_GUIDE.md](MODEL_TESTING_GUIDE.md) - Understand model selection
+- [docs/testing/PROMPT_OPTIMIZATION_LOG.md](docs/testing/PROMPT_OPTIMIZATION_LOG.md) - See what's being tested
+- [docs/testing/MODEL_TESTING_GUIDE.md](docs/testing/MODEL_TESTING_GUIDE.md) - Understand model selection
+- [docs/planning/IMPLEMENTATION_PLAN.md](docs/planning/IMPLEMENTATION_PLAN.md) - Improvement plans
 
 **Work Area**:
 - Backend code (`packages/backend/`)
@@ -226,9 +229,9 @@ docs/ (or root-level .md files)
 ### For Claude (Prompt Engineer)
 
 **Primary Documents**:
-1. [CLAUDE_HANDOFF.md](CLAUDE_HANDOFF.md) - Composer's handoff
-2. [QUICK_START.md](QUICK_START.md) - Quick reference
-3. [PROMPT_OPTIMIZATION_LOG.md](PROMPT_OPTIMIZATION_LOG.md) - Track improvements
+1. [docs/handoffs/CLAUDE_HANDOFF.md](docs/handoffs/CLAUDE_HANDOFF.md) - Composer's handoff
+2. [docs/getting-started/QUICK_START.md](docs/getting-started/QUICK_START.md) - Quick reference
+3. [docs/testing/PROMPT_OPTIMIZATION_LOG.md](docs/testing/PROMPT_OPTIMIZATION_LOG.md) - Track improvements
 
 **Work Area**:
 - [config/prompts/music_generation.txt](config/prompts/music_generation.txt) - Main prompt ⭐
@@ -237,8 +240,8 @@ docs/ (or root-level .md files)
 - `.env` - Model selection
 
 **Reference**:
-- [MODEL_TESTING_GUIDE.md](MODEL_TESTING_GUIDE.md) - How to test models
-- [packages/backend/src/services/aiService.ts](packages/backend/src/services/aiService.ts) - How prompts are used
+- [docs/testing/MODEL_TESTING_GUIDE.md](docs/testing/MODEL_TESTING_GUIDE.md) - How to test models
+- [docs/planning/CONTEXT_GAPS_ANALYSIS.md](docs/planning/CONTEXT_GAPS_ANALYSIS.md) - Context-aware generation gaps
 
 ---
 
@@ -246,8 +249,8 @@ docs/ (or root-level .md files)
 
 **Start Here**:
 1. [README.md](README.md) - Project overview
-2. [SETUP.md](SETUP.md) - How to run locally
-3. [ARCHITECTURE.md](ARCHITECTURE.md) - How it works
+2. [docs/getting-started/SETUP.md](docs/getting-started/SETUP.md) - How to run locally
+3. [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md) - How it works
 
 **Contributing**:
 - Adding examples: Edit [config/prompts/few_shot_examples.json](config/prompts/few_shot_examples.json)
@@ -271,20 +274,57 @@ docs/ (or root-level .md files)
 1. Edit config/prompts/*.txt or *.json
 2. Restart backend (auto-reloads prompts)
 3. Test with various prompts
-4. Document results in PROMPT_OPTIMIZATION_LOG.md
+4. Document results in docs/testing/PROMPT_OPTIMIZATION_LOG.md
 5. Iterate
 ```
 
 ### Model Testing Workflow
 ```
-1. Read MODEL_TESTING_GUIDE.md
-2. Edit .env → Change OPENROUTER_MODEL
+1. Read docs/testing/MODEL_TESTING_GUIDE.md
+2. Edit .env → Change XAI_MODEL_CREATIVE
 3. Restart backend
 4. Run standardized test suite
-5. Record results in PROMPT_OPTIMIZATION_LOG.md
+5. Record results in docs/testing/PROMPT_OPTIMIZATION_LOG.md
 6. Compare models
 7. Select best model for production
 ```
+
+---
+
+## 🆘 Common Questions
+
+### Where do I...
+
+**...change the default AI model?**
+→ Edit `.env` → Change `XAI_MODEL_CREATIVE`
+
+**...add a new music genre example?**
+→ Edit [config/prompts/few_shot_examples.json](config/prompts/few_shot_examples.json) → Add new object
+
+**...improve prompt quality?**
+→ Edit [config/prompts/music_generation.txt](config/prompts/music_generation.txt)
+
+**...test a specific model?**
+→ Read [docs/testing/MODEL_TESTING_GUIDE.md](docs/testing/MODEL_TESTING_GUIDE.md) → Follow testing methodology
+
+**...understand how prompts are loaded?**
+→ Read [packages/backend/src/services/configLoader.ts](packages/backend/src/services/configLoader.ts)
+
+**...find the API endpoints?**
+→ [packages/backend/src/routes/music.ts](packages/backend/src/routes/music.ts) (generation)
+→ [packages/backend/src/routes/transcription.ts](packages/backend/src/routes/transcription.ts) (voice)
+
+**...see what Composer built?**
+→ Read [docs/handoffs/CLAUDE_HANDOFF.md](docs/handoffs/CLAUDE_HANDOFF.md) (complete file inventory)
+
+**...see what Claude improved?**
+→ Read [docs/handoffs/CLAUDE_PHASE2_COMPLETE.md](docs/handoffs/CLAUDE_PHASE2_COMPLETE.md)
+
+**...see implementation plans?**
+→ Read [docs/planning/IMPLEMENTATION_PLAN.md](docs/planning/IMPLEMENTATION_PLAN.md)
+
+**...check code quality?**
+→ Read [docs/architecture/CODEBASE_EVALUATION.md](docs/architecture/CODEBASE_EVALUATION.md)
 
 ---
 
@@ -299,93 +339,7 @@ docs/ (or root-level .md files)
 
 ---
 
-## 🆘 Common Questions
-
-### Where do I...
-
-**...change the default AI model?**
-→ Edit `.env` → Change `OPENROUTER_MODEL`
-
-**...add a new music genre example?**
-→ Edit [config/prompts/few_shot_examples.json](config/prompts/few_shot_examples.json) → Add new object
-
-**...improve prompt quality?**
-→ Edit [config/prompts/music_generation.txt](config/prompts/music_generation.txt)
-
-**...test a specific model?**
-→ Read [MODEL_TESTING_GUIDE.md](MODEL_TESTING_GUIDE.md) → Follow testing methodology
-
-**...understand how prompts are rendered?**
-→ Read [packages/backend/src/services/configLoader.ts](packages/backend/src/services/configLoader.ts)
-
-**...find the API endpoints?**
-→ [packages/backend/src/routes/music.ts](packages/backend/src/routes/music.ts) (generation)
-→ [packages/backend/src/routes/transcription.ts](packages/backend/src/routes/transcription.ts) (voice)
-
-**...see what Composer built?**
-→ Read [CLAUDE_HANDOFF.md](CLAUDE_HANDOFF.md) (complete file inventory)
-
-**...see what Claude improved?**
-→ Read [CLAUDE_PHASE2_COMPLETE.md](CLAUDE_PHASE2_COMPLETE.md)
-
----
-
-## 📦 Project Structure Summary
-
-```
-kre8/
-├── 📄 Documentation (15 .md files)
-│   ├── README.md, ARCHITECTURE.md, SETUP.md (Core docs)
-│   ├── CLAUDE_HANDOFF.md, CLAUDE_PHASE2_COMPLETE.md (Handoffs)
-│   └── PROMPT_OPTIMIZATION_LOG.md, MODEL_TESTING_GUIDE.md (Testing)
-│
-├── ⚙️ Configuration (Config files)
-│   ├── config/prompts/ (Prompt templates) ⭐ Edit these
-│   ├── config/defaults.json (Music defaults)
-│   └── .env (Environment variables)
-│
-├── 📦 Packages (Source code)
-│   ├── packages/shared/ (TypeScript types)
-│   ├── packages/backend/ (Express API)
-│   └── packages/frontend/ (React app)
-│
-└── 🐳 Deployment (Docker, Railway)
-    ├── Dockerfile, docker-compose.yml
-    └── .railway.json
-```
-
-**Total**: ~51 source files + 15 documentation files = 66 files
-
----
-
-## 🎯 Current Status (2025-11-20)
-
-### What's Complete ✅
-- ✅ Full-stack application (Composer - Phase 1)
-- ✅ Enhanced prompts with 20 examples (Claude - Phase 2)
-- ✅ Comprehensive documentation (Both)
-- ✅ Testing framework (Claude - Phase 2)
-
-### What's In Progress ⏳
-- ⏳ Systematic model testing (Claude - Phase 2)
-- ⏳ Real-world usage validation
-
-### What's Next 🔜
-- 🔜 Model comparison and selection
-- 🔜 Prompt iteration based on test results
-- 🔜 Production deployment
-
----
-
-## 📞 Contact & Support
-
-**Composer**: Infrastructure, code, technical implementation
-**Claude**: Prompt engineering, model testing, optimization
-
-**Collaboration**: Both working in parallel on separate concerns with zero overlap.
-
----
-
-**Last Updated**: 2025-11-20
-**Maintained By**: Composer (infrastructure) + Claude (prompts)
+**Last Updated**: 2025-01-20  
+**Documentation Organized**: All docs moved to `docs/` directory structure  
+**Maintained By**: Composer (infrastructure) + Claude (prompts)  
 **Status**: Phase 2 Complete, Ready for Testing

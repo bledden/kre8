@@ -1,48 +1,75 @@
-[
-  {
-    "name": "anthropic/claude-3.5-sonnet",
-    "provider": "anthropic",
-    "maxTokens": 2000,
-    "temperature": 0.7,
-    "topP": 0.9
+{
+  "models": [
+    {
+      "id": "grok-4-1-fast-reasoning",
+      "name": "Grok 4.1 Fast (Reasoning)",
+      "provider": "xai",
+      "category": "creative",
+      "maxTokens": 4000,
+      "temperature": 0.7,
+      "topP": 0.9,
+      "contextLength": 2000000,
+      "features": ["reasoning", "vision", "multimodal"],
+      "useCase": "Complex creative tasks - music generation, image-to-music, full track production",
+      "note": "Best quality output with extended reasoning. #1 on LMArena, 3x lower hallucination rate."
+    },
+    {
+      "id": "grok-4-1-fast",
+      "name": "Grok 4.1 Fast",
+      "provider": "xai",
+      "category": "agent",
+      "maxTokens": 4000,
+      "temperature": 0.7,
+      "topP": 0.9,
+      "contextLength": 2000000,
+      "features": ["tool-calling", "x_search", "web_search", "code_execution", "collections"],
+      "useCase": "Agent Tools API - x_search, web_search, code_execution, collections_search",
+      "note": "Specifically optimized for tool calling and agentic workflows."
+    },
+    {
+      "id": "grok-4-1-fast-non-reasoning",
+      "name": "Grok 4.1 Fast (Non-Reasoning)",
+      "provider": "xai",
+      "category": "simple",
+      "maxTokens": 2000,
+      "temperature": 0.5,
+      "topP": 0.9,
+      "contextLength": 2000000,
+      "features": ["fast-response"],
+      "useCase": "Simple text generation - voice feedback, error messages, status updates",
+      "note": "Fastest response time, no reasoning overhead."
+    },
+    {
+      "id": "grok-4",
+      "name": "Grok 4",
+      "provider": "xai",
+      "category": "legacy",
+      "maxTokens": 4000,
+      "temperature": 0.7,
+      "topP": 0.9,
+      "contextLength": 256000,
+      "features": ["reasoning", "vision", "multimodal"],
+      "useCase": "Legacy - use grok-4-1-fast-reasoning instead",
+      "note": "Always-on reasoning mode. Superseded by Grok 4.1."
+    }
+  ],
+  "defaults": {
+    "creative": "grok-4-1-fast-reasoning",
+    "agent": "grok-4-1-fast",
+    "simple": "grok-4-1-fast-non-reasoning"
   },
-  {
-    "name": "openai/gpt-4-turbo",
-    "provider": "openai",
-    "maxTokens": 2000,
-    "temperature": 0.7,
-    "topP": 0.9
-  },
-  {
-    "name": "google/gemini-pro",
-    "provider": "google",
-    "maxTokens": 2000,
-    "temperature": 0.7,
-    "topP": 0.9
-  },
-  {
-    "name": "x-ai/grok-beta",
-    "provider": "x-ai",
-    "maxTokens": 2000,
-    "temperature": 0.7,
-    "topP": 0.9,
-    "note": "Grok Beta model via OpenRouter (if available)"
-  },
-  {
-    "name": "x-ai/grok-2",
-    "provider": "x-ai",
-    "maxTokens": 2000,
-    "temperature": 0.7,
-    "topP": 0.9,
-    "note": "Grok 2 model via OpenRouter (if available)"
-  },
-  {
-    "name": "x-ai/grok-2-1212",
-    "provider": "x-ai",
-    "maxTokens": 2000,
-    "temperature": 0.7,
-    "topP": 0.9,
-    "note": "Grok 2 1212 model via OpenRouter (if available)"
+  "taskMapping": {
+    "generate_music": "creative",
+    "refine_music": "creative",
+    "image_to_music": "creative",
+    "full_track_production": "creative",
+    "x_search": "agent",
+    "web_search": "agent",
+    "code_validation": "agent",
+    "sentiment_analysis": "agent",
+    "collections_search": "agent",
+    "voice_feedback": "simple",
+    "error_message": "simple",
+    "status_text": "simple"
   }
-]
-
+}

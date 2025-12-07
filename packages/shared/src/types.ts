@@ -12,12 +12,15 @@ export interface StrudelCode {
   };
 }
 
+export type GenerationMode = 'auto' | 'loop' | 'arrangement';
+
 export interface MusicConfig {
   tempo?: number;
   scale?: string;
   key?: string;
   samples?: Record<string, string>;
   style?: string;
+  mode?: GenerationMode;
 }
 
 export interface Message {
@@ -26,11 +29,22 @@ export interface Message {
   timestamp: Date;
 }
 
+export interface UserContext {
+  location?: {
+    city?: string;
+    country?: string;
+    coordinates?: { lat: number; lng: number };
+  };
+  timezone?: string;
+  localTime?: string;
+}
+
 export interface GenerationRequest {
   prompt: string;
   config?: MusicConfig;
   conversationHistory?: Message[];
   refinement?: boolean;
+  context?: UserContext;
 }
 
 export interface AIServiceResponse {
@@ -66,5 +80,48 @@ export interface AppState {
   conversation: Message[];
   isLoading: boolean;
   error?: string;
+}
+
+// User Feedback Types
+export type FeedbackRating = 1 | 2 | 3 | 4 | 5;
+
+export interface UserFeedback {
+  id: string;
+  rating: FeedbackRating;
+  textFeedback?: string;
+  prompt: string;
+  code: string;
+  metadata: {
+    tempo?: number;
+    genre?: string;
+    instruments?: string[];
+    listenDurationMs?: number;
+  };
+  createdAt: Date;
+}
+
+export interface FeedbackRequest {
+  rating: FeedbackRating;
+  textFeedback?: string;
+  prompt: string;
+  code: string;
+  metadata?: {
+    tempo?: number;
+    genre?: string;
+    instruments?: string[];
+    listenDurationMs?: number;
+  };
+}
+
+export interface RelevantPreference {
+  rating: FeedbackRating;
+  textFeedback?: string;
+  prompt: string;
+  similarity: number;
+}
+
+export interface PreferenceSearchResult {
+  preferences: RelevantPreference[];
+  summary?: string;
 }
 

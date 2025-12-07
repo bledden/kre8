@@ -7,117 +7,242 @@
   },
   {
     "prompt": "Make a fast techno beat with hi-hats",
-    "code": "setcps(2);\ns(\"bd ~ bd ~ hh*8\").gain(0.9)",
+    "code": "stack(s(\"bd ~ bd ~\"), s(\"hh*8\").gain(0.6)).cpm(120)",
     "genre": "techno",
     "complexity": "beginner"
   },
   {
-    "prompt": "Play a slow ambient melody with piano",
-    "code": "setcps(0.5);\nn(\"c4 e4 g4 ~\").s(\"superpiano\").gain(0.7).slow(2)",
+    "prompt": "Play a slow ambient melody",
+    "code": "n(\"c4 e4 g4 ~\").s(\"sine\").gain(0.7).slow(2).room(0.5).cpm(60)",
     "genre": "ambient",
     "complexity": "beginner"
   },
   {
     "prompt": "Create a layered pattern with drums, bass, and melody",
-    "code": "stack(\n  s(\"bd sd bd sd\").gain(0.9),\n  n(\"0 0 ~ 3\").s(\"dbass\").octave(3).gain(1.0),\n  n(\"c4 e4 g4 ~\").s(\"superpiano\").gain(0.6)\n)",
+    "code": "stack(s(\"bd sd bd sd\").gain(0.9), n(\"0 0 ~ 3\").s(\"bass\").octave(2).gain(0.8), n(\"c4 e4 g4 ~\").s(\"sine\").gain(0.6)).cpm(90)",
     "genre": "layered",
     "complexity": "intermediate"
   },
   {
     "prompt": "Generate a jazz chord progression with swing",
-    "code": "setcps(0.8);\nstack(\n  n(\"<[cmaj7,e3,g3,b3] [fmaj7,f3,a3,c4] [g7,g3,b3,d4,f4] [cmaj7,c3,e3,g3]>\").s(\"piano\").gain(0.7).slow(2),\n  s(\"~ rim ~ rim\").gain(0.5)\n).swing()",
+    "code": "stack(note(\"<[c3,e3,g3,b3] [f3,a3,c4] [g3,b3,d4,f4] [c3,e3,g3]>\").s(\"casio\").gain(0.7).slow(2), s(\"~ hh ~ hh\").gain(0.5)).cpm(100)",
     "genre": "jazz",
     "complexity": "intermediate"
   },
   {
     "prompt": "Make a hip-hop beat with 808s and snappy snares",
-    "code": "setcps(0.85);\nstack(\n  s(\"bd*2 ~ bd ~\").gain(1.0).cutoff(200),\n  s(\"~ cp ~ cp\").gain(0.9).delay(0.25),\n  s(\"hh*4\").gain(0.4),\n  n(\"0 ~ 3 0\").s(\"bass\").octave(2).gain(0.8)\n)",
+    "code": "stack(s(\"bd*2 ~ bd ~\").gain(1.0), s(\"~ cp ~ cp\").gain(0.9).delay(0.25), s(\"hh*4\").gain(0.4), n(\"0 ~ 3 0\").s(\"bass\").octave(2).gain(0.8)).cpm(85)",
     "genre": "hip-hop",
     "complexity": "intermediate"
   },
   {
+    "prompt": "Create a lo-fi hip-hop beat",
+    "code": "stack(s(\"bd ~ bd ~\").gain(0.7), s(\"~ sd ~ ~\").gain(0.5).room(0.5), s(\"hh hh hh hh\").gain(0.25).cutoff(2000)).slow(2).cutoff(1800).room(0.4).cpm(85)",
+    "genre": "lo-fi",
+    "complexity": "beginner"
+  },
+  {
+    "prompt": "Make a chill lo-fi beat with jazzy chords",
+    "code": "stack(s(\"bd ~ bd ~\").gain(0.6), s(\"~ sd ~ ~\").gain(0.4).room(0.6), note(\"<[d3,f3,a3] [g3,b3,d4]>\").s(\"sine\").gain(0.35).cutoff(800).room(0.7)).slow(2).cutoff(1500).room(0.5).cpm(80)",
+    "genre": "lo-fi",
+    "complexity": "intermediate"
+  },
+  {
     "prompt": "Create a minimal house track with filtered pads",
-    "code": "setcps(1.0);\nstack(\n  s(\"bd*4\").gain(0.9),\n  s(\"~ sd ~ sd\").gain(0.8),\n  s(\"hh*8\").gain(0.5).pan(rand),\n  n(\"<c4 e4 g4 a4>\").s(\"sawtooth\").cutoff(sine.range(200, 2000)).resonance(0.2).gain(0.6).slow(4)\n)",
+    "code": "stack(s(\"bd*4\").gain(0.9), s(\"~ sd ~ sd\").gain(0.8), s(\"hh*8\").gain(0.5).pan(rand), n(\"<c4 e4 g4 a4>\").s(\"sawtooth\").cutoff(sine.range(200, 2000)).gain(0.6).slow(4)).cpm(120)",
     "genre": "house",
     "complexity": "advanced"
   },
   {
-    "prompt": "Generate a breakbeat with jungle-style drum breaks",
-    "code": "setcps(1.4);\nstack(\n  s(\"breaks165*4\").fast(2).sometimes(rev).gain(0.9),\n  n(\"0 ~ 5 3\").s(\"bass\").octave(2).gain(0.8),\n  s(\"~ ~ ~ hh*3\").gain(0.6).pan(perlin)\n)",
-    "genre": "jungle",
-    "complexity": "advanced"
-  },
-  {
     "prompt": "Create an arpeggiated synth melody with reverb",
-    "code": "setcps(0.9);\nn(\"<c4 e4 g4 b4 c5 g4 e4 c4>\").s(\"triangle\").fast(2).gain(0.7).room(0.8).size(0.9).cutoff(1500)",
+    "code": "n(\"<c4 e4 g4 b4 c5 g4 e4 c4>\").s(\"triangle\").fast(2).gain(0.7).room(0.8).size(0.9).cutoff(1500).cpm(90)",
     "genre": "ambient",
     "complexity": "intermediate"
   },
   {
     "prompt": "Make a polyrhythmic percussion pattern",
-    "code": "setcps(1.0);\nstack(\n  s(\"bd*4\").gain(0.9),\n  s(\"~ rim ~ rim\").fast(3/2).gain(0.6),\n  s(\"hh*5\").gain(0.5),\n  s(\"~ ~ clap ~\").fast(5/4).gain(0.7)\n)",
+    "code": "stack(s(\"bd*4\").gain(0.9), s(\"~ cp ~ cp\").fast(1.5).gain(0.6), s(\"hh*5\").gain(0.5), s(\"~ ~ cb ~\").fast(1.25).gain(0.7)).cpm(100)",
     "genre": "experimental",
     "complexity": "advanced"
   },
   {
     "prompt": "Generate a dark techno bassline with distortion",
-    "code": "setcps(1.2);\nstack(\n  s(\"bd ~ bd bd\").gain(1.0),\n  n(\"0 ~ 5 3\").s(\"sawtooth\").octave(1).cutoff(300).distort(0.4).gain(0.9),\n  s(\"hh*8\").gain(0.4).pan(sine)\n)",
+    "code": "stack(s(\"bd ~ bd bd\").gain(1.0), n(\"0 ~ 5 3\").s(\"sawtooth\").octave(1).cutoff(300).distort(0.4).gain(0.9), s(\"hh*8\").gain(0.4).pan(sine)).cpm(130)",
     "genre": "techno",
     "complexity": "intermediate"
   },
   {
-    "prompt": "Create a melodic trance arpeggio with sidechain",
-    "code": "setcps(1.15);\nstack(\n  s(\"bd*4\").gain(0.9),\n  n(\"<[c5,e5,g5] [d5,f5,a5] [e5,g5,b5] [f5,a5,c6]>\").s(\"supersquare\").fast(4).cutoff(2000).gain(0.7).compress(0.8),\n  s(\"~ ~ hh*2 ~\").gain(0.5)\n)",
-    "genre": "trance",
-    "complexity": "advanced"
-  },
-  {
     "prompt": "Make a glitchy IDM pattern with random elements",
-    "code": "setcps(0.95);\nstack(\n  s(\"bd? ~ sd? ~\").sometimes(rev).gain(0.8),\n  n(choose([0,3,5,7,10])).s(\"triangle\").fast(irand(4).add(1)).gain(0.6).cutoff(rand.range(400, 3000)),\n  s(\"hh*8\").degradeBy(0.3).gain(0.5)\n)",
+    "code": "stack(s(\"bd? ~ sd? ~\").sometimes(rev).gain(0.8), n(\"0 3 5 7\").s(\"triangle\").fast(2).gain(0.6).cutoff(rand.range(400, 3000)), s(\"hh*8\").degradeBy(0.3).gain(0.5)).cpm(95)",
     "genre": "idm",
     "complexity": "advanced"
   },
   {
     "prompt": "Create a reggae rhythm with offbeat chords",
-    "code": "setcps(0.7);\nstack(\n  s(\"bd ~ ~ ~\").gain(0.9),\n  s(\"~ sd ~ ~\").gain(0.8),\n  n(\"<[c3,e3,g3] [f3,a3,c4] [g3,b3,d4]>\").s(\"piano\").gain(\"~ 0.7 ~ 0.7\"),\n  s(\"~ ~ hh hh\").gain(0.5)\n)",
+    "code": "stack(s(\"bd ~ ~ ~\").gain(0.9), s(\"~ sd ~ ~\").gain(0.8), note(\"<[c3,e3,g3] [f3,a3,c4] [g3,b3,d4]>\").s(\"casio\").gain(\"~ 0.7 ~ 0.7\"), s(\"~ ~ hh hh\").gain(0.5)).cpm(70)",
     "genre": "reggae",
     "complexity": "intermediate"
   },
   {
     "prompt": "Generate a dubstep wobble bass pattern",
-    "code": "setcps(0.9);\nstack(\n  s(\"bd ~ ~ ~ bd ~ sd ~\").gain(0.95),\n  n(\"0 0 0 0\").s(\"sawtooth\").octave(1).cutoff(sine.range(100, 2500).fast(8)).resonance(0.5).gain(0.9),\n  s(\"hh*4\").gain(0.4)\n)",
+    "code": "stack(s(\"bd ~ ~ ~ bd ~ sd ~\").gain(0.95), n(\"0 0 0 0\").s(\"sawtooth\").octave(1).cutoff(sine.range(100, 2500).fast(8)).resonance(0.5).gain(0.9), s(\"hh*4\").gain(0.4)).cpm(140)",
     "genre": "dubstep",
     "complexity": "advanced"
   },
   {
     "prompt": "Make a minimal ambient drone with evolving texture",
-    "code": "setcps(0.4);\nstack(\n  n(\"c2\").s(\"sawtooth\").cutoff(sine.range(50, 400).slow(8)).gain(0.5).room(0.9).size(0.9),\n  n(\"<c4 e4 g4>\").s(\"sine\").gain(perlin.range(0.2, 0.5)).slow(4),\n  s(\"~ ~ ~ bd\").gain(0.3).delay(0.5)\n)",
+    "code": "stack(n(\"c2\").s(\"sawtooth\").cutoff(sine.range(50, 400).slow(8)).gain(0.5).room(0.9).size(0.9), n(\"<c4 e4 g4>\").s(\"sine\").gain(perlin.range(0.2, 0.5)).slow(4), s(\"~ ~ ~ bd\").gain(0.3).delay(0.5)).cpm(40)",
     "genre": "ambient",
     "complexity": "advanced"
   },
   {
     "prompt": "Create a funk groove with syncopated bass",
-    "code": "setcps(0.95);\nstack(\n  s(\"bd ~ ~ bd ~ bd ~ ~\").gain(0.9),\n  s(\"~ cp ~ ~ ~ cp ~ cp\").gain(0.8),\n  n(\"0 ~ 3 5 ~ 7 3 ~\").s(\"bass\").octave(2).gain(0.85).cutoff(800),\n  s(\"hh*8\").gain(0.5).sometimes(fast(2))\n)",
+    "code": "stack(s(\"bd ~ ~ bd ~ bd ~ ~\").gain(0.9), s(\"~ cp ~ ~ ~ cp ~ cp\").gain(0.8), n(\"0 ~ 3 5 ~ 7 3 ~\").s(\"bass\").octave(2).gain(0.85).cutoff(800), s(\"hh*8\").gain(0.5).sometimes(fast(2))).cpm(95)",
     "genre": "funk",
     "complexity": "intermediate"
   },
   {
     "prompt": "Generate a classical-inspired string pattern",
-    "code": "setcps(0.6);\nstack(\n  n(\"<[c3,e3,g3,c4] [a2,c3,e3,a3] [f3,a3,c4,f4] [g3,b3,d4,g4]>\").s(\"gtr\").gain(0.7).room(0.5).slow(2),\n  n(\"c2 ~ e2 ~ g2 ~ c3 ~\").s(\"bass\").gain(0.6).slow(2)\n)",
+    "code": "stack(note(\"<[c3,e3,g3,c4] [a2,c3,e3,a3] [f3,a3,c4,f4] [g3,b3,d4,g4]>\").s(\"gtr\").gain(0.7).room(0.5).slow(2), n(\"c2 ~ e2 ~ g2 ~ c3 ~\").s(\"bass\").gain(0.6).slow(2)).cpm(60)",
     "genre": "classical",
     "complexity": "intermediate"
   },
   {
     "prompt": "Make a trap beat with hi-hat rolls",
-    "code": "setcps(0.75);\nstack(\n  s(\"bd ~ ~ ~ bd ~ ~ bd\").gain(0.95),\n  s(\"~ ~ cp ~ ~ ~ cp ~\").gain(0.85).delay(0.25),\n  s(\"hh*2 hh*2 hh*4 hh*8\").fast(2).gain(0.6),\n  n(\"0 ~ ~ 3\").s(\"bass\").octave(2).gain(0.9)\n)",
+    "code": "stack(s(\"bd ~ ~ ~ bd ~ ~ bd\").gain(0.95), s(\"~ ~ cp ~ ~ ~ cp ~\").gain(0.85).delay(0.25), s(\"hh*2 hh*2 hh*4 hh*8\").fast(2).gain(0.6), n(\"0 ~ ~ 3\").s(\"bass\").octave(2).gain(0.9)).cpm(140)",
     "genre": "trap",
     "complexity": "intermediate"
   },
   {
     "prompt": "Create an evolving ambient soundscape with delays",
-    "code": "setcps(0.5);\nstack(\n  n(\"c4 e4 g4 a4 c5 a4 g4 e4\").s(\"sine\").slow(4).gain(0.5).delay(0.5).delaytime(0.375).delayfeedback(0.6),\n  n(\"c2\").s(\"sawtooth\").cutoff(200).gain(0.4).room(0.9),\n  s(\"~ ~ ~ bd\").gain(0.25).delay(0.75)\n)",
+    "code": "stack(n(\"c4 e4 g4 a4 c5 a4 g4 e4\").s(\"sine\").slow(4).gain(0.5).delay(0.5).delaytime(0.375).delayfeedback(0.6), n(\"c2\").s(\"sawtooth\").cutoff(200).gain(0.4).room(0.9), s(\"~ ~ ~ bd\").gain(0.25).delay(0.75)).cpm(50)",
     "genre": "ambient",
+    "complexity": "advanced"
+  },
+  {
+    "prompt": "Create a deep house track",
+    "code": "stack(s(\"bd*4\").gain(0.8), s(\"~ cp ~ cp\").gain(0.6).room(0.4), s(\"[~ hh]*4\").gain(0.4), note(\"<[c3,e3,g3] [a2,c3,e3]>\").s(\"sine\").gain(0.5).cutoff(600).room(0.5).slow(2)).cpm(122)",
+    "genre": "deep-house",
+    "complexity": "intermediate"
+  },
+  {
+    "prompt": "Make a drum and bass beat",
+    "code": "stack(s(\"bd ~ ~ bd sd ~ bd ~\").fast(2).gain(0.9), s(\"hh*8\").gain(0.5), n(\"0 ~ ~ 0\").s(\"sawtooth\").octave(1).cutoff(250).gain(0.85)).cpm(174)",
+    "genre": "drum-and-bass",
+    "complexity": "intermediate"
+  },
+  {
+    "prompt": "Create a synthwave track with arpeggios",
+    "code": "stack(s(\"bd ~ sd ~\").gain(0.85), s(\"hh*4\").gain(0.4), n(\"<c4 e4 g4 b4 c5 b4 g4 e4>\").s(\"sawtooth\").fast(2).gain(0.6).cutoff(1800).room(0.4), note(\"<[c3,e3,g3] [a2,c3,e3] [f3,a3,c4] [g3,b3,d4]>\").s(\"triangle\").gain(0.4).slow(2)).cpm(110)",
+    "genre": "synthwave",
+    "complexity": "intermediate"
+  },
+  {
+    "prompt": "Make a trance anthem with building energy",
+    "code": "stack(s(\"bd*4\").gain(0.9), s(\"~ ~ cp ~\").gain(0.7), s(\"hh*8\").gain(0.5), n(\"<c4 d4 e4 g4 a4 g4 e4 d4>\").s(\"sawtooth\").fast(2).gain(0.6).cutoff(sine.range(800, 3000).slow(4)).room(0.6)).cpm(140)",
+    "genre": "trance",
+    "complexity": "intermediate"
+  },
+  {
+    "prompt": "Create a downtempo trip-hop beat",
+    "code": "stack(s(\"bd ~ ~ bd ~ ~ bd ~\").gain(0.75), s(\"~ ~ sd ~ ~ ~ ~ ~\").gain(0.6).room(0.5), note(\"<[d3,f3,a3] [c3,e3,g3]>\").s(\"sine\").gain(0.4).cutoff(600).room(0.6).slow(2)).slow(2).cpm(90)",
+    "genre": "trip-hop",
+    "complexity": "intermediate"
+  },
+  {
+    "prompt": "Make a UK garage 2-step beat",
+    "code": "stack(s(\"bd ~ [~ bd] ~\").gain(0.85), s(\"~ cp ~ ~\").gain(0.7), s(\"hh*4\").gain(0.5).pan(rand), n(\"0 ~ 3 ~\").s(\"bass\").octave(2).gain(0.8)).cpm(132)",
+    "genre": "uk-garage",
+    "complexity": "intermediate"
+  },
+  {
+    "prompt": "Create a chiptune 8-bit melody",
+    "code": "stack(s(\"bd ~ sd ~\").gain(0.8).crush(8), n(\"<c5 e5 g5 c6 b5 g5 e5 c5>\").s(\"square\").gain(0.6).crush(10), n(\"c3 c3 g3 g3\").s(\"square\").octave(2).gain(0.5).crush(10)).cpm(140)",
+    "genre": "chiptune",
+    "complexity": "intermediate"
+  },
+  {
+    "prompt": "Make a boom bap hip-hop beat",
+    "code": "stack(s(\"bd ~ ~ ~ bd ~ ~ ~\").gain(0.9), s(\"~ ~ sd ~ ~ ~ sd ~\").gain(0.85), s(\"hh*4\").gain(0.4).cutoff(4000)).slow(2).cpm(92)",
+    "genre": "boom-bap",
+    "complexity": "intermediate"
+  },
+  {
+    "prompt": "Create an acid techno track with 303 bassline",
+    "code": "stack(s(\"bd*4\").gain(0.9), s(\"~ ~ cp ~\").gain(0.7), s(\"hh*8\").gain(0.45), n(\"0 0 3 0 5 0 7 5\").s(\"sawtooth\").octave(2).cutoff(sine.range(200, 2500).fast(2)).resonance(0.6).gain(0.8)).cpm(135)",
+    "genre": "acid-techno",
+    "complexity": "advanced"
+  },
+  {
+    "prompt": "Make a vaporwave slowed track",
+    "code": "stack(s(\"bd ~ ~ ~\").gain(0.5).room(0.7), note(\"<[c4,e4,g4] [a3,c4,e4] [f4,a4,c5]>\").s(\"sine\").gain(0.4).cutoff(800).room(0.8).delay(0.4)).slow(3).cpm(70)",
+    "genre": "vaporwave",
+    "complexity": "intermediate"
+  },
+  {
+    "prompt": "Create electronic dub with heavy delay",
+    "code": "stack(s(\"bd ~ ~ ~\").gain(0.85), s(\"~ ~ sd ~\").gain(0.7).delay(0.6).delaytime(0.375).delayfeedback(0.65), s(\"~ hh ~ hh\").gain(0.4).delay(0.4), n(\"0 ~ ~ 0\").s(\"bass\").octave(2).gain(0.75)).cpm(130)",
+    "genre": "dub",
+    "complexity": "intermediate"
+  },
+  {
+    "prompt": "Make a minimal techno groove",
+    "code": "stack(s(\"bd*4\").gain(0.85), s(\"~ [~ cp] ~ ~\").gain(0.6), s(\"hh*8\").gain(0.35).degradeBy(0.2)).cpm(128)",
+    "genre": "minimal-techno",
+    "complexity": "beginner"
+  },
+  {
+    "prompt": "Create an industrial EBM beat",
+    "code": "stack(s(\"bd*4\").gain(0.95).distort(0.2), s(\"~ cp ~ cp\").gain(0.8).distort(0.3), n(\"0 0 3 0\").s(\"sawtooth\").octave(2).cutoff(400).distort(0.4).gain(0.85)).cpm(125)",
+    "genre": "industrial",
+    "complexity": "intermediate"
+  },
+  {
+    "prompt": "Make an electro-funk groove",
+    "code": "stack(s(\"bd ~ ~ bd ~ bd ~ ~\").gain(0.85), s(\"~ cp ~ ~ ~ cp ~ ~\").gain(0.75), n(\"0 ~ 3 5 ~ 7 3 ~\").s(\"bass\").octave(2).cutoff(sine.range(400, 1200)).gain(0.8), s(\"hh*8\").gain(0.45)).cpm(108)",
+    "genre": "electro-funk",
+    "complexity": "intermediate"
+  },
+  {
+    "prompt": "Create a phonk beat with cowbells",
+    "code": "stack(s(\"bd ~ ~ bd ~ ~ bd ~\").gain(0.9).distort(0.15), s(\"~ ~ cp ~ ~ ~ cp ~\").gain(0.8), s(\"~ cb ~ cb\").gain(0.6), n(\"0 ~ 0 ~\").s(\"sawtooth\").octave(1).cutoff(300).gain(0.85)).slow(2).cpm(130)",
+    "genre": "phonk",
+    "complexity": "intermediate"
+  },
+  {
+    "prompt": "Create a techno track with builds and drops",
+    "code": "stack(s(\"bd*4\").gain(0.9).every(8, degradeBy(0.7)), s(\"~ cp ~ cp\").gain(0.7).sometimes(delay(0.25)), s(\"hh*8\").gain(0.5).every(4, fast(1.5)), n(\"0 0 3 5\").s(\"sawtooth\").octave(2).cutoff(sine.range(200, 2500).slow(8)).gain(0.8)).cpm(130)",
+    "genre": "techno",
+    "complexity": "advanced"
+  },
+  {
+    "prompt": "Make a house song that evolves",
+    "code": "stack(s(\"bd*4\").gain(0.85), s(\"~ cp ~ cp\").gain(0.6).every(8, room(0.6)), s(\"hh*8\").gain(0.4).every(4, x => x.fast(2).gain(0.3)), note(\"<[c3,e3,g3] [a2,c3,e3] [f3,a3,c4] [g3,b3,d4]>\").s(\"sine\").gain(0.5).cutoff(sine.range(400, 1500).slow(16)).room(0.5)).cpm(124)",
+    "genre": "house",
+    "complexity": "advanced"
+  },
+  {
+    "prompt": "Create an evolving ambient piece",
+    "code": "stack(n(\"c3 e3 g3 b3\").s(\"sine\").slow(4).gain(perlin.range(0.3, 0.6)).room(0.9).delay(0.5), n(\"c2\").s(\"triangle\").cutoff(sine.range(100, 400).slow(16)).gain(0.4), s(\"~ ~ ~ bd\").gain(0.2).room(0.8).every(8, delay(0.6))).cpm(60)",
+    "genre": "ambient",
+    "complexity": "advanced"
+  },
+  {
+    "prompt": "Make a drum and bass track with breaks",
+    "code": "stack(s(\"bd ~ ~ bd sd ~ bd ~\").fast(2).gain(0.9).every(8, degradeBy(0.5)), s(\"hh*8\").gain(0.5).every(4, fast(2)), n(\"0 ~ ~ 0\").s(\"sawtooth\").octave(1).cutoff(sine.range(150, 800).slow(4)).gain(0.85)).cpm(174)",
+    "genre": "drum-and-bass",
+    "complexity": "advanced"
+  },
+  {
+    "prompt": "Create a trance anthem with build and drop",
+    "code": "stack(s(\"bd*4\").gain(0.9).every(16, degradeBy(0.8)), s(\"~ ~ cp ~\").gain(0.7), s(\"hh*8\").gain(0.5).every(4, fast(1.5)), n(\"<c4 d4 e4 g4 a4 g4 e4 d4>\").s(\"sawtooth\").fast(2).cutoff(sine.range(600, 4000).slow(16)).room(0.6).gain(0.7)).cpm(140)",
+    "genre": "trance",
+    "complexity": "advanced"
+  },
+  {
+    "prompt": "Make a progressive track that builds tension",
+    "code": "stack(s(\"bd*4\").gain(0.85), s(\"~ cp ~ cp\").gain(0.6).sometimes(room(0.5)), s(\"hh*8\").gain(0.4).every(8, x => x.fast(2).degradeBy(0.3)), n(\"0 3 5 7\").s(\"sine\").octave(3).cutoff(sine.range(300, 2000).slow(32)).gain(0.6).room(0.4)).cpm(126)",
+    "genre": "progressive-house",
     "complexity": "advanced"
   }
 ]
-

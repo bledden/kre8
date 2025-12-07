@@ -10,7 +10,7 @@ export default function CodePanel() {
     return (
       <div className="card">
         <h2 className="text-xl font-semibold mb-4">Generated Code</h2>
-        <div className="text-gray-500 text-center py-12">
+        <div className="text-text-secondary text-center py-12">
           <p>Generate music code to see it here</p>
         </div>
       </div>
@@ -22,13 +22,13 @@ export default function CodePanel() {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold">Generated Code</h2>
         {currentCode.explanation && (
-          <p className="text-sm text-gray-400">{currentCode.explanation}</p>
+          <p className="text-sm text-text-secondary">{currentCode.explanation}</p>
         )}
       </div>
-      
+
       <CodeMirror
         value={currentCode.code}
-        height="400px"
+        height="300px"
         extensions={[javascript({ jsx: false })]}
         theme={oneDark}
         editable={true}
@@ -40,9 +40,9 @@ export default function CodePanel() {
           });
         }}
       />
-      
+
       {currentCode.metadata && (
-        <div className="mt-4 text-sm text-gray-400">
+        <div className="mt-4 text-sm text-text-secondary">
           {currentCode.metadata.tempo && (
             <span className="mr-4">Tempo: {currentCode.metadata.tempo} BPM</span>
           )}

@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { configCache, promptCache } from '../utils/lruCache.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -29,12 +30,20 @@ export interface AppDefaults {
 }
 
 /**
- * Load prompt template from file
+ * Load prompt template from file (with caching)
  */
 export function loadPromptTemplate(name: string): string {
+  const cacheKey = `prompt:${name}`;
+  const cached = promptCache.get(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
   try {
     const path = join(CONFIG_ROOT, 'prompts', `${name}.txt`);
-    return readFileSync(path, 'utf-8');
+    const content = readFileSync(path, 'utf-8');
+    promptCache.set(cacheKey, content);
+    return content;
   } catch (error) {
     console.error(`Failed to load prompt template ${name}:`, error);
     throw new Error(`Prompt template ${name} not found`);
@@ -42,13 +51,21 @@ export function loadPromptTemplate(name: string): string {
 }
 
 /**
- * Load JSON config file
+ * Load JSON config file (with caching)
  */
 export function loadJsonConfig<T>(path: string): T {
+  const cacheKey = `config:${path}`;
+  const cached = configCache.get(cacheKey);
+  if (cached) {
+    return cached as T;
+  }
+
   try {
     const fullPath = join(CONFIG_ROOT, path);
     const content = readFileSync(fullPath, 'utf-8');
-    return JSON.parse(content) as T;
+    const parsed = JSON.parse(content) as T;
+    configCache.set(cacheKey, parsed);
+    return parsed;
   } catch (error) {
     console.error(`Failed to load config ${path}:`, error);
     throw new Error(`Config file ${path} not found`);
@@ -94,24 +111,17 @@ export function loadFewShotExamples(): Array<FewShotExample> {
 
 /**
  * Render prompt template with variables
+ * Optimized: single-pass replacement using replace callback
  */
 export function renderPrompt(
   template: string,
   variables: Record<string, string | number | undefined>
 ): string {
-  let rendered = template;
-  // Find all placeholders in template
-  const placeholderRegex = /\{\{(\w+)\}\}/g;
-  const matches = Array.from(template.matchAll(placeholderRegex));
-  
-  // Replace each placeholder
-  for (const match of matches) {
-    const placeholder = match[0]; // e.g., "{{name}}"
-    const key = match[1]; // e.g., "name"
+  // Single-pass replacement using replace with callback function
+  // More efficient than multiple regex replacements
+  return template.replace(/\{\{(\w+)\}\}/g, (_, key: string) => {
     const value = variables[key];
-    rendered = rendered.replace(new RegExp(placeholder.replace(/[{}]/g, '\\$&'), 'g'), String(value ?? ''));
-  }
-  
-  return rendered;
+    return String(value ?? '');
+  });
 }
 

@@ -1,32 +1,61 @@
 import { Router } from 'express';
-import { generateMusicCode } from '../services/aiService.js';
-import { generateMusicCodeMock } from '../services/mockAIService.js';
+import { generateMusicCode, getModelConfig } from '../services/aiService.js';
+import { gatherContext } from '../services/contextService.js';
 import { GenerationRequestSchema } from '@kre8/shared';
 import { z } from 'zod';
 
 export const musicRoutes = Router();
 
-// Allow switching between mock and real AI via environment variable
-const USE_MOCK_AI = process.env.USE_MOCK_AI === 'true';
-
 /**
  * POST /api/music/generate
- * Generate Strudel code from natural language prompt
+ * Generate Strudel code from natural language prompt using xAI/Grok
+ * Automatically injects user context (time, location) to influence music generation
  */
 musicRoutes.post('/generate', async (req, res, next) => {
   try {
     // Validate request
     const validatedRequest = GenerationRequestSchema.parse(req.body);
 
-    // Generate code (mock or real based on environment)
-    const result = USE_MOCK_AI
-      ? await generateMusicCodeMock(validatedRequest)
-      : await generateMusicCode(validatedRequest);
+    // Always try to gather and inject context
+    // Context injection is fast (no API calls) and improves music personalization
+    let enhancedPrompt = validatedRequest.prompt;
+    let contextInfo = null;
+
+    if (validatedRequest.context) {
+      try {
+        const contextResult = await gatherContext({
+          prompt: validatedRequest.prompt,
+          location: validatedRequest.context.location,
+          timezone: validatedRequest.context.timezone,
+          localTime: validatedRequest.context.localTime,
+        });
+
+        // Always use enhanced prompt when context is available
+        enhancedPrompt = contextResult.enhancedPrompt;
+
+        if (contextResult.contextGathered) {
+          contextInfo = {
+            contextSummary: contextResult.contextSummary,
+            musicalRecommendations: contextResult.musicalRecommendations,
+          };
+          console.log('[Music] Context applied:', contextResult.contextSummary);
+        }
+      } catch (contextError) {
+        // Log but don't fail - fall back to original prompt
+        console.warn('[Music] Context gathering failed, using original prompt:', contextError);
+      }
+    }
+
+    // Generate code using live xAI API
+    const result = await generateMusicCode({
+      ...validatedRequest,
+      prompt: enhancedPrompt,
+    });
 
     res.json({
       success: true,
       data: result,
-      mock: USE_MOCK_AI, // Indicate if mock was used
+      context: contextInfo, // Include context info in response (optional)
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -48,22 +77,15 @@ musicRoutes.post('/generate', async (req, res, next) => {
  * Check music generation service health
  */
 musicRoutes.get('/health', (req, res) => {
-  const useXAI = !!process.env.XAI_API_KEY;
-  const useOpenRouter = !!process.env.OPENROUTER_API_KEY;
-  
+  const hasApiKey = !!process.env.XAI_API_KEY;
+  const modelConfig = getModelConfig();
+
   res.json({
     success: true,
     service: 'music-generation',
-    mode: USE_MOCK_AI ? 'mock' : 'real',
-    provider: USE_MOCK_AI ? 'mock' : (useXAI ? 'xai' : (useOpenRouter ? 'openrouter' : 'none')),
-    configured: USE_MOCK_AI || useXAI || useOpenRouter,
-    model: USE_MOCK_AI 
-      ? 'mock' 
-      : (useXAI 
-        ? process.env.XAI_MODEL || 'grok-beta'
-        : (useOpenRouter 
-          ? process.env.OPENROUTER_MODEL || 'anthropic/claude-3.5-sonnet'
-          : 'none')),
+    provider: 'xai-grok',
+    configured: hasApiKey,
+    models: modelConfig,
   });
 });
 
