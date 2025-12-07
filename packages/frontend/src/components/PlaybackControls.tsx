@@ -1,13 +1,12 @@
 import { useState, useEffect, useCallback, RefObject, useRef } from 'react';
-import { Play, Square, Download, Circle, Clock, Video } from 'lucide-react';
+import { Play, Square, Download, Circle, Video } from 'lucide-react';
 import { useAppStore } from '../stores/appStore';
-import { executeCode, stopAll, setTempo } from '../services/strudelService';
+import { executeCode, stopAll, setTempo, getAudioDestinationNode } from '../services/strudelService';
 import {
   downloadAudio,
   downloadAsWav,
   startStrudelRecording,
   stopRecording,
-  isRecording as checkIsRecording,
   getRecordingDuration,
 } from '../services/audioRecorder';
 import { videoRecorder, downloadVideo } from '../services/videoRecorder';
@@ -73,14 +72,23 @@ export default function PlaybackControls({ visualizerRef }: PlaybackControlsProp
     };
   }, [isRecordingVideo]);
 
-  // Cleanup on unmount
+  // Cleanup on unmount and ensure video recorder is stopped
   useEffect(() => {
+    // Cancel any ongoing video recording on mount (handles stale state)
+    if (videoRecorder.isRecording()) {
+      videoRecorder.cancel();
+    }
+
     return () => {
       if (autoStopTimeout) {
         clearTimeout(autoStopTimeout);
       }
       if (videoAutoStopTimeout) {
         clearTimeout(videoAutoStopTimeout);
+      }
+      // Cancel video recording on unmount
+      if (videoRecorder.isRecording()) {
+        videoRecorder.cancel();
       }
     };
   }, [autoStopTimeout, videoAutoStopTimeout]);
@@ -114,10 +122,13 @@ export default function PlaybackControls({ visualizerRef }: PlaybackControlsProp
     }
   };
 
-  const handleTempoChange = async (newTempo: number) => {
-    setPlayback({ tempo: newTempo });
+  const handleTempoChange = async (newBpm: number) => {
+    setPlayback({ tempo: newBpm });
     if (playback.isPlaying) {
-      await setTempo(newTempo);
+      // Convert BPM to CPM for Strudel (assuming 4 beats per cycle)
+      // This maintains relative tempo adjustment
+      const targetCpm = newBpm / 4;
+      await setTempo(targetCpm);
     }
   };
 
@@ -152,34 +163,7 @@ export default function PlaybackControls({ visualizerRef }: PlaybackControlsProp
     }
   };
 
-  const handleRecord30s = async () => {
-    if (isRecording) {
-      await stopRecordingAndSave();
-    } else {
-      try {
-        // Make sure music is playing
-        if (!playback.isPlaying && currentCode) {
-          await executeCode(currentCode);
-          setPlayback({ isPlaying: true });
-        }
 
-        await startStrudelRecording();
-        setIsRecording(true);
-        setRecordedBlob(null);
-
-        // Auto-stop after 30 seconds
-        const timeout = setTimeout(async () => {
-          if (checkIsRecording()) {
-            await stopRecordingAndSave();
-          }
-        }, RECORD_DURATION_30S);
-
-        setAutoStopTimeout(timeout);
-      } catch (error) {
-        console.error('Failed to start 30s recording:', error);
-      }
-    }
-  };
 
   const handleDownload = () => {
     if (recordedBlob) {
@@ -214,37 +198,54 @@ export default function PlaybackControls({ visualizerRef }: PlaybackControlsProp
   const handleRecordVideo30s = async () => {
     if (isRecordingVideo) {
       await stopVideoRecordingAndSave();
-    } else {
-      const canvas = visualizerRef.current?.getCanvas();
-      if (!canvas) {
-        console.error('Canvas not available for video recording');
-        return;
+      return;
+    }
+
+    // Check canvas availability
+    const canvas = visualizerRef.current?.getCanvas();
+    if (!canvas) {
+      console.error('[PlaybackControls] Canvas not available for video recording');
+      console.log('[PlaybackControls] visualizerRef.current:', visualizerRef.current);
+      return;
+    }
+
+    try {
+      console.log('[PlaybackControls] Starting video recording...');
+
+      // Make sure music is playing
+      if (!playback.isPlaying && currentCode) {
+        console.log('[PlaybackControls] Starting playback for recording...');
+        await executeCode(currentCode);
+        setPlayback({ isPlaying: true });
+        // Small delay to let audio start
+        await new Promise(resolve => setTimeout(resolve, 200));
       }
 
-      try {
-        // Make sure music is playing
-        if (!playback.isPlaying && currentCode) {
-          await executeCode(currentCode);
-          setPlayback({ isPlaying: true });
+      // Get audio destination for capturing Strudel audio
+      const audioDestination = await getAudioDestinationNode();
+      console.log('[PlaybackControls] Audio destination:', audioDestination ? 'available' : 'not available');
+
+      // Start video recording with canvas visuals + Strudel audio
+      videoRecorder.start({
+        canvas,
+        audioDestination: audioDestination || undefined,
+      });
+
+      setIsRecordingVideo(true);
+      setRecordedVideoBlob(null);
+
+      // Auto-stop after 30 seconds
+      const timeout = setTimeout(async () => {
+        if (videoRecorder.isRecording()) {
+          await stopVideoRecordingAndSave();
         }
+      }, RECORD_DURATION_30S);
 
-        // Start video recording
-        videoRecorder.start({ canvas });
-
-        setIsRecordingVideo(true);
-        setRecordedVideoBlob(null);
-
-        // Auto-stop after 30 seconds
-        const timeout = setTimeout(async () => {
-          if (videoRecorder.isRecording()) {
-            await stopVideoRecordingAndSave();
-          }
-        }, RECORD_DURATION_30S);
-
-        setVideoAutoStopTimeout(timeout);
-      } catch (error) {
-        console.error('Failed to start video recording:', error);
-      }
+      setVideoAutoStopTimeout(timeout);
+      console.log('[PlaybackControls] Video recording started, will auto-stop in 30s');
+    } catch (error) {
+      console.error('[PlaybackControls] Failed to start video recording:', error);
+      setIsRecordingVideo(false);
     }
   };
 
@@ -325,27 +326,15 @@ export default function PlaybackControls({ visualizerRef }: PlaybackControlsProp
             {isRecording && !autoStopTimeout ? formatTime(recordingTime) : 'Record'}
           </button>
 
-          {/* 30s Record Button */}
-          <button
-            onClick={handleRecord30s}
-            disabled={isRecording && !autoStopTimeout}
-            className={`btn-secondary flex items-center gap-2 ${
-              isRecording && autoStopTimeout ? 'bg-red-600 hover:bg-red-700 text-white border-red-600' : ''
-            }`}
-            title="Record 30 seconds for sharing"
-          >
-            <Clock className={`w-4 h-4 ${isRecording && autoStopTimeout ? 'animate-pulse' : ''}`} />
-            {isRecording && autoStopTimeout ? formatTime(recordingTime) : '30s Clip'}
-          </button>
+
 
           {/* 30s Video Record Button */}
           <button
             onClick={handleRecordVideo30s}
-            disabled={isRecordingVideo && !videoAutoStopTimeout}
             className={`btn-secondary flex items-center gap-2 ${
               isRecordingVideo ? 'bg-purple-600 hover:bg-purple-700 text-white border-purple-600' : ''
             }`}
-            title="Record 30 second video with visualizer for X"
+            title={isRecordingVideo ? 'Click to stop recording' : 'Record 30 second video with visualizer for X'}
           >
             <Video className={`w-4 h-4 ${isRecordingVideo ? 'animate-pulse' : ''}`} />
             {isRecordingVideo ? formatVideoTime(videoRecordingTime) : '30s Video'}

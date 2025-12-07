@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Star, X, Send, Loader2 } from 'lucide-react';
 import { feedbackApi, FeedbackRating } from '../services/api';
+import { useAppStore } from '../stores/appStore';
 import type { StrudelCode } from '@kre8/shared';
 
 interface FeedbackModalProps {
@@ -18,6 +19,7 @@ export function FeedbackModal({
   prompt,
   listenDurationMs,
 }: FeedbackModalProps) {
+  const addFavorite = useAppStore((state) => state.addFavorite);
   const [rating, setRating] = useState<FeedbackRating | null>(null);
   const [hoverRating, setHoverRating] = useState<number | null>(null);
   const [textFeedback, setTextFeedback] = useState('');
@@ -60,6 +62,16 @@ export function FeedbackModal({
           listenDurationMs,
         },
       });
+
+      // Add to local favorites if 5-star rating
+      if (rating === 5) {
+        addFavorite({
+          code: code.code,
+          genre: code.metadata?.instruments?.[0],
+          tempo: code.metadata?.bpm || code.metadata?.tempo,
+          instruments: code.metadata?.instruments,
+        });
+      }
 
       setIsSubmitted(true);
 

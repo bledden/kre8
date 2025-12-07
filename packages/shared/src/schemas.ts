@@ -21,6 +21,8 @@ export const StrudelCodeSchema = z.object({
   }).optional(),
 });
 
+export const GenerationModeSchema = z.enum(['auto', 'loop', 'arrangement', 'layer']);
+
 export const MusicConfigSchema = z.object({
   tempo: z.number()
     .min(VALIDATION.MIN_TEMPO, `Tempo must be at least ${VALIDATION.MIN_TEMPO} BPM`)
@@ -30,6 +32,14 @@ export const MusicConfigSchema = z.object({
   key: z.string().optional(),
   samples: z.record(z.string()).optional(),
   style: z.string().optional(),
+  mode: GenerationModeSchema.optional(),
+});
+
+export const LayerSchema = z.object({
+  id: z.string(),
+  code: z.string(),
+  name: z.string(),
+  muted: z.boolean(),
 });
 
 export const MessageSchema = z.object({
@@ -62,6 +72,7 @@ export const GenerationRequestSchema = z.object({
   conversationHistory: z.array(MessageSchema).optional(),
   refinement: z.boolean().optional(),
   context: UserContextSchema.optional(),
+  existingLayers: z.array(LayerSchema).optional(),
 });
 
 export const AIServiceResponseSchema = z.object({

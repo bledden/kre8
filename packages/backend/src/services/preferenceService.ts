@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+import FormData from 'form-data';
 import type { FeedbackRequest, FeedbackRating, RelevantPreference, PreferenceSearchResult } from '@kre8/shared';
 
 // =============================================================================
@@ -35,11 +36,13 @@ interface XAISearchResult {
  * Uploads as a document with embeddings for semantic search
  */
 export async function storeFeedback(request: FeedbackRequest): Promise<{ success: boolean; feedbackId: string }> {
+  // Use regular API key for Files API, management key for Collections API
+  const apiKey = getApiKey();
   const managementKey = getManagementApiKey();
   const collectionId = getCollectionId();
 
-  if (!managementKey || !collectionId) {
-    console.warn('[Preferences] Missing XAI_MANAGEMENT_API_KEY or XAI_PREFERENCES_COLLECTION_ID');
+  if (!apiKey || !managementKey || !collectionId) {
+    console.warn('[Preferences] Missing XAI_API_KEY, XAI_MANAGEMENT_API_KEY, or XAI_PREFERENCES_COLLECTION_ID');
     return { success: false, feedbackId: '' };
   }
 
@@ -52,16 +55,22 @@ export async function storeFeedback(request: FeedbackRequest): Promise<{ success
   try {
     // Step 1: Upload file to xAI Files API
     const formData = new FormData();
-    const blob = new Blob([documentContent], { type: 'text/plain' });
-    formData.append('file', blob, `feedback-${feedbackId}.txt`);
+    // Use Buffer for Node.js instead of Blob
+    const fileBuffer = Buffer.from(documentContent, 'utf-8');
+    formData.append('file', fileBuffer, {
+      filename: `feedback-${feedbackId}.txt`,
+      contentType: 'text/plain',
+    });
     formData.append('purpose', 'collections');
 
+    // Files API uses the regular API key, not management key
     const fileResponse = await axios.post<XAIFileUploadResponse>(
       `${XAI_API_BASE}/v1/files`,
       formData,
       {
         headers: {
-          'Authorization': `Bearer ${managementKey}`,
+          'Authorization': `Bearer ${apiKey}`,
+          ...formData.getHeaders(),
         },
         timeout: 30000,
       }
@@ -100,6 +109,8 @@ export async function storeFeedback(request: FeedbackRequest): Promise<{ success
       const axiosError = error as AxiosError<{ error?: { message?: string } }>;
       const message = axiosError.response?.data?.error?.message || axiosError.message;
       console.error('[Preferences] Store error:', message);
+      console.error('[Preferences] Response data:', JSON.stringify(axiosError.response?.data));
+      console.error('[Preferences] Response status:', axiosError.response?.status);
     } else {
       console.error('[Preferences] Store error:', error);
     }

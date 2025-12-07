@@ -239,6 +239,115 @@ export async function postTweet(
 }
 
 /**
+ * Upload media (video/image) to X
+ * Uses chunked upload for videos larger than a few MB
+ * Returns media_id string to attach to tweets
+ */
+export async function uploadMedia(
+  accessToken: string,
+  mediaBuffer: Buffer,
+  mediaType: string = 'video/mp4'
+): Promise<{ mediaId: string }> {
+  const isVideo = mediaType.startsWith('video/');
+  const mediaCategory = isVideo ? 'tweet_video' : 'tweet_image';
+  const totalBytes = mediaBuffer.length;
+
+  console.log(`[X Upload] Starting ${mediaCategory} upload: ${(totalBytes / 1024 / 1024).toFixed(2)} MB`);
+
+  // Step 1: INIT - Initialize the upload
+  const initResponse = await axios.post(
+    'https://upload.twitter.com/1.1/media/upload.json',
+    new URLSearchParams({
+      command: 'INIT',
+      total_bytes: totalBytes.toString(),
+      media_type: mediaType,
+      media_category: mediaCategory,
+    }).toString(),
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    }
+  );
+
+  const mediaId = initResponse.data.media_id_string;
+  console.log(`[X Upload] INIT complete, media_id: ${mediaId}`);
+
+  // Step 2: APPEND - Upload chunks (max 5MB each)
+  const chunkSize = 5 * 1024 * 1024; // 5MB chunks
+  let segmentIndex = 0;
+
+  for (let offset = 0; offset < totalBytes; offset += chunkSize) {
+    const chunk = mediaBuffer.subarray(offset, Math.min(offset + chunkSize, totalBytes));
+
+    const formData = new URLSearchParams();
+    formData.append('command', 'APPEND');
+    formData.append('media_id', mediaId);
+    formData.append('segment_index', segmentIndex.toString());
+    formData.append('media_data', chunk.toString('base64'));
+
+    await axios.post(
+      'https://upload.twitter.com/1.1/media/upload.json',
+      formData.toString(),
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }
+    );
+
+    console.log(`[X Upload] APPEND segment ${segmentIndex} complete (${(offset / totalBytes * 100).toFixed(1)}%)`);
+    segmentIndex++;
+  }
+
+  // Step 3: FINALIZE - Complete the upload
+  const finalizeResponse = await axios.post(
+    'https://upload.twitter.com/1.1/media/upload.json',
+    new URLSearchParams({
+      command: 'FINALIZE',
+      media_id: mediaId,
+    }).toString(),
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    }
+  );
+
+  // Step 4: For videos, wait for processing to complete
+  if (isVideo && finalizeResponse.data.processing_info) {
+    let processingInfo = finalizeResponse.data.processing_info;
+
+    while (processingInfo.state !== 'succeeded') {
+      if (processingInfo.state === 'failed') {
+        throw new Error(`Video processing failed: ${processingInfo.error?.message || 'Unknown error'}`);
+      }
+
+      const waitSeconds = processingInfo.check_after_secs || 5;
+      console.log(`[X Upload] Processing... waiting ${waitSeconds}s (state: ${processingInfo.state})`);
+      await new Promise(resolve => setTimeout(resolve, waitSeconds * 1000));
+
+      // Check status
+      const statusResponse = await axios.get(
+        `https://upload.twitter.com/1.1/media/upload.json?command=STATUS&media_id=${mediaId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      processingInfo = statusResponse.data.processing_info;
+    }
+  }
+
+  console.log(`[X Upload] Complete! media_id: ${mediaId}`);
+  return { mediaId };
+}
+
+/**
  * Search recent tweets (uses App-Only auth - bearer token)
  */
 export async function searchTweets(

@@ -113,15 +113,10 @@ kre8/
     │
     ├── architecture/                  # Technical documentation
     │   ├── ARCHITECTURE.md
-    │   ├── PROJECT_SUMMARY.md
     │   └── CODEBASE_EVALUATION.md
     │
     ├── handoffs/                      # Collaboration handoffs
-    │   ├── CLAUDE_HANDOFF.md
-    │   ├── HANDOFF_SUMMARY.md
-    │   ├── CLAUDE_PHASE2_COMPLETE.md
-    │   ├── PHASE2_INTEGRATION.md
-    │   └── STATUS_COMPARISON.md
+    │   └── HANDOFF_HISTORY.md
     │
     ├── integration/                   # Integration docs
     │   ├── INTEGRATION_PLAN.md
@@ -144,8 +139,6 @@ kre8/
     │
     ├── status/                        # Project status
     │   ├── PROJECT_STATUS.md
-    │   ├── GIT_COMMIT_SUMMARY.md
-    │   └── DEPENDENCY_FIXES.md
     │
     └── setup/                         # Setup guides
         └── GROK_SETUP.md
@@ -179,9 +172,8 @@ kre8/
 → Read [docs/testing/TESTING_QUICK_START.md](docs/testing/TESTING_QUICK_START.md) (quick reference)
 → Run `npm test` to execute tests
 
-#### ...understand the handoff
-→ Claude: Read [docs/handoffs/CLAUDE_HANDOFF.md](docs/handoffs/CLAUDE_HANDOFF.md)
-→ Composer: Read [docs/handoffs/CLAUDE_PHASE2_COMPLETE.md](docs/handoffs/CLAUDE_PHASE2_COMPLETE.md)
+#### ...understand the handoff history
+→ Read [docs/handoffs/HANDOFF_HISTORY.md](docs/handoffs/HANDOFF_HISTORY.md)
 
 #### ...see implementation plans
 → Read [docs/planning/IMPLEMENTATION_PLAN.md](docs/planning/IMPLEMENTATION_PLAN.md)
@@ -197,7 +189,7 @@ kre8/
 ### For Composer (Infrastructure Developer)
 
 **Primary Documents**:
-1. [docs/handoffs/CLAUDE_PHASE2_COMPLETE.md](docs/handoffs/CLAUDE_PHASE2_COMPLETE.md) - What Claude completed
+1. [docs/status/PROJECT_STATUS.md](docs/status/PROJECT_STATUS.md) - Current project status
 2. [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md) - Technical decisions
 3. [docs/getting-started/SETUP.md](docs/getting-started/SETUP.md) - Development setup
 
@@ -216,9 +208,8 @@ kre8/
 ### For Claude (Prompt Engineer)
 
 **Primary Documents**:
-1. [docs/handoffs/CLAUDE_HANDOFF.md](docs/handoffs/CLAUDE_HANDOFF.md) - Composer's handoff
-2. [docs/getting-started/QUICK_START.md](docs/getting-started/QUICK_START.md) - Quick reference
-3. [docs/testing/PROMPT_OPTIMIZATION_LOG.md](docs/testing/PROMPT_OPTIMIZATION_LOG.md) - Track improvements
+1. [docs/getting-started/SETUP.md](docs/getting-started/SETUP.md) - Setup guide (includes quick start)
+2. [docs/testing/PROMPT_OPTIMIZATION_LOG.md](docs/testing/PROMPT_OPTIMIZATION_LOG.md) - Track improvements
 
 **Work Area**:
 - [config/prompts/music_generation.txt](config/prompts/music_generation.txt) - Main prompt ⭐
@@ -301,11 +292,11 @@ kre8/
 → [packages/backend/src/routes/music.ts](packages/backend/src/routes/music.ts) (generation)
 → [packages/backend/src/routes/transcription.ts](packages/backend/src/routes/transcription.ts) (voice)
 
-**...see what Composer built?**
-→ Read [docs/handoffs/CLAUDE_HANDOFF.md](docs/handoffs/CLAUDE_HANDOFF.md) (complete file inventory)
+**...see project history?**
+→ Read [docs/handoffs/HANDOFF_HISTORY.md](docs/handoffs/HANDOFF_HISTORY.md)
 
-**...see what Claude improved?**
-→ Read [docs/handoffs/CLAUDE_PHASE2_COMPLETE.md](docs/handoffs/CLAUDE_PHASE2_COMPLETE.md)
+**...check current status?**
+→ Read [docs/status/PROJECT_STATUS.md](docs/status/PROJECT_STATUS.md)
 
 **...see implementation plans?**
 → Read [docs/planning/IMPLEMENTATION_PLAN.md](docs/planning/IMPLEMENTATION_PLAN.md)

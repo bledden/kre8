@@ -133,12 +133,3 @@ export async function withRetry<T>(
   // Should never reach here, but TypeScript needs this
   throw lastError;
 }
-
-/**
- * Create a retry wrapper with pre-configured options
- */
-export function createRetryWrapper(defaultOptions: RetryOptions) {
-  return <T>(fn: () => Promise<T>, options?: RetryOptions): Promise<T> => {
-    return withRetry(fn, { ...defaultOptions, ...options });
-  };
-}

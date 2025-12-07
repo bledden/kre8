@@ -1,0 +1,20 @@
+# Sound Catalog Embedding Generation
+# Run: pip install -r requirements.txt
+
+# BGE-M3 and sentence-transformers
+sentence-transformers>=2.2.2
+transformers>=4.36.0
+torch>=2.0.0
+
+# FlagEmbedding for BGE-M3 (official BAAI implementation)
+FlagEmbedding>=1.2.0
+
+# HTTP client for arrwDB
+requests>=2.31.0
+httpx>=0.25.0
+
+# Progress bars
+tqdm>=4.66.0
+
+# JSON handling
+orjson>=3.9.0

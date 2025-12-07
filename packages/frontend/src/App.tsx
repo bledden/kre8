@@ -6,6 +6,7 @@ import PlaybackControls from './components/PlaybackControls';
 import AudioVisualizer, { AudioVisualizerRef } from './components/AudioVisualizer';
 import PresetGallery from './components/PresetGallery';
 import VocalGenerator from './components/VocalGenerator';
+import LayerPanel from './components/LayerPanel';
 import { useAppStore } from './stores/appStore';
 import { loadVocalSample } from './services/strudelService';
 
@@ -41,8 +42,9 @@ function App() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Panel - Input */}
           <div className="space-y-6">
-            <PresetGallery />
             <InputPanel />
+            <PresetGallery />
+            <LayerPanel />
             <VocalGenerator onSampleGenerated={handleVocalGenerated} />
             {error && (
               <div className="card bg-red-900/20 border-red-700">

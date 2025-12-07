@@ -1,15 +1,23 @@
 import { Router, Request, Response } from 'express';
+import multer from 'multer';
 import {
   generateAuthUrl,
   exchangeCodeForToken,
   refreshAccessToken,
   postTweet,
+  uploadMedia,
   searchTweets,
   isXAuthConfigured,
   getXAuthConfig,
 } from '../services/xAuthService.js';
 
 export const xRoutes = Router();
+
+// Configure multer for media uploads (max 50MB for videos)
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 50 * 1024 * 1024 },
+});
 
 const FRONTEND_URL = process.env.CORS_ORIGIN || 'http://localhost:5173';
 
@@ -91,7 +99,7 @@ xRoutes.get('/callback', async (req: Request, res: Response) => {
     // Redirect to frontend with success (tokens stored server-side, pass session indicator)
     // In production, use secure httpOnly cookies for the session
     res.redirect(
-      `${FRONTEND_URL}?x_auth_success=true&x_username=${encodeURIComponent(tokens.username)}`
+      `${FRONTEND_URL}?x_auth_success=true&x_username=${encodeURIComponent(tokens.username)}&access_token=${encodeURIComponent(tokens.accessToken)}&refresh_token=${encodeURIComponent(tokens.refreshToken)}&expires_in=${tokens.expiresIn}&user_id=${encodeURIComponent(tokens.userId)}`
     );
   } catch (error) {
     console.error('X callback error:', error);
@@ -144,6 +152,54 @@ xRoutes.post('/tweet', async (req: Request, res: Response) => {
       success: false,
       error: {
         message: error instanceof Error ? error.message : 'Failed to post tweet',
+      },
+    });
+  }
+});
+
+/**
+ * POST /api/x/upload
+ * Upload media (video/image) to attach to a tweet
+ */
+xRoutes.post('/upload', upload.single('media'), async (req: Request, res: Response) => {
+  try {
+    const { accessToken, mediaType } = req.body;
+    const file = req.file;
+
+    if (!accessToken) {
+      res.status(401).json({
+        success: false,
+        error: { message: 'Access token required' },
+      });
+      return;
+    }
+
+    if (!file) {
+      res.status(400).json({
+        success: false,
+        error: { message: 'Media file required' },
+      });
+      return;
+    }
+
+    console.log(`[X Upload Route] Received file: ${file.size} bytes, type: ${mediaType || file.mimetype}`);
+
+    const result = await uploadMedia(
+      accessToken,
+      file.buffer,
+      mediaType || file.mimetype || 'video/mp4'
+    );
+
+    res.json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    console.error('Upload error:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        message: error instanceof Error ? error.message : 'Failed to upload media',
       },
     });
   }

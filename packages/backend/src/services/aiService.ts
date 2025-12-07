@@ -6,14 +6,13 @@ import {
   Message,
 } from '@kre8/shared';
 import {
-  loadPromptTemplate,
-  loadFewShotExamples,
   loadDefaults,
-  renderPrompt,
 } from './configLoader.js';
 import { AI_CONFIG, MUSIC_CONFIG } from '../constants/index.js';
 import { withRetry } from '../utils/retry.js';
 import { searchPreferences, buildPreferenceContext } from './preferenceService.js';
+import { getSoundsForRequest } from './soundSearchService.js';
+import { buildDynamicPrompt, analyzePrompt } from './dynamicPromptService.js';
 
 // =============================================================================
 // xAI/Grok API Configuration
@@ -129,7 +128,22 @@ interface GrokResponse {
 }
 
 /**
+ * Extract the original user prompt from an enhanced prompt
+ * Context-enhanced prompts end with "User request: <original prompt>"
+ */
+function extractOriginalPrompt(enhancedPrompt: string): string {
+  // Look for "User request:" marker added by contextService
+  const match = enhancedPrompt.match(/User request:\s*(.+?)$/s);
+  if (match) {
+    return match[1].trim();
+  }
+  // Fallback: return the whole prompt if no marker found
+  return enhancedPrompt;
+}
+
+/**
  * Generate Strudel code from natural language prompt
+ * Uses dynamic prompt building with RAG for context-aware generation
  */
 export async function generateMusicCode(
   request: GenerationRequest
@@ -140,54 +154,75 @@ export async function generateMusicCode(
   }
 
   try {
-    // Load prompt template
-    const templateName = request.refinement ? 'refinement' : 'music_generation';
-    const promptTemplate = loadPromptTemplate(templateName);
-    const examples = loadFewShotExamples();
     const defaults = loadDefaults();
 
-    // Build system message
-    const systemMessage = renderPrompt(promptTemplate, {
-      examples: examples.length > 0
-        ? examples.map((ex) => `User: ${ex.prompt}\nAssistant: ${ex.code}`).join('\n\n')
-        : '',
-      defaults: JSON.stringify(defaults, null, 2),
+    // Analyze the prompt to understand user intent
+    const analysis = analyzePrompt(request.prompt);
+    console.log('[AI] Prompt analysis:', {
+      isVague: analysis.isVague,
+      genres: analysis.genres,
+      moods: analysis.moods,
+      complexity: analysis.complexity,
     });
 
-    // Build user message with context
-    let userMessage = request.prompt;
+    // Extract original prompt for sound search (strip context enhancement markers)
+    const originalPrompt = extractOriginalPrompt(request.prompt);
+
+    // Search for relevant sounds from arrwDB
+    let soundResult = null;
+    try {
+      console.log('[AI] Sound search using:', originalPrompt);
+      soundResult = await getSoundsForRequest(originalPrompt, {
+        includeGenre: request.config?.style || analysis.genres[0],
+        limit: 10,
+      });
+      console.log('[AI] Found', soundResult.sounds.length, 'relevant sounds');
+    } catch (soundError) {
+      console.warn('[AI] Sound search failed, continuing without:', soundError);
+    }
+
+    // Search for user preferences
+    let preferenceContext = '';
+    try {
+      const preferenceResult = await searchPreferences(request.prompt, 5);
+      preferenceContext = buildPreferenceContext(preferenceResult) || '';
+      if (preferenceContext) {
+        console.log('[AI] Injected', preferenceResult.preferences.length, 'preferences');
+      }
+    } catch (prefError) {
+      console.warn('[AI] Preference search failed:', prefError);
+    }
+
+    // Build conversation context if available
+    let conversationContext = '';
     if (request.conversationHistory && request.conversationHistory.length > 0) {
       const history = request.conversationHistory
         .slice(-AI_CONFIG.CONVERSATION_HISTORY_LIMIT)
         .map((msg: Message) => `${msg.role}: ${msg.content}`)
         .join('\n');
-      userMessage = `Previous conversation:\n${history}\n\nNew request: ${request.prompt}`;
+      conversationContext = `Previous conversation:\n${history}\n\n`;
     }
 
-    // Search for and inject relevant user preferences
-    // This allows Grok to learn from past feedback and personalize music generation
-    try {
-      const preferenceResult = await searchPreferences(request.prompt, 5);
-      const preferenceContext = buildPreferenceContext(preferenceResult);
-      if (preferenceContext) {
-        userMessage = `${preferenceContext}\n\n${userMessage}`;
-        console.log('[AI] Injected', preferenceResult.preferences.length, 'relevant preferences');
-      }
-    } catch (prefError) {
-      // Log but don't fail - preferences are optional enhancement
-      console.warn('[AI] Preference search failed, continuing without:', prefError);
-    }
+    // Build dynamic prompt using RAG results
+    const dynamicPrompt = buildDynamicPrompt({
+      prompt: request.prompt,
+      sounds: soundResult || undefined,
+      mode: (request.config?.mode as 'loop' | 'layer' | 'arrangement' | 'auto') || 'auto',
+      existingLayers: request.existingLayers,
+      contextInfo: preferenceContext || undefined,
+    });
 
-    // Add config if provided
+    console.log('[AI] Dynamic prompt built:', {
+      isVague: analysis.isVague,
+      suggestedTempo: dynamicPrompt.suggestedTempo,
+      promptLength: dynamicPrompt.systemPrompt.length,
+    });
+
+    // Build final user message
+    let userMessage = conversationContext + request.prompt;
+
+    // Add config extras if provided
     if (request.config) {
-      // Handle generation mode explicitly
-      if (request.config.mode && request.config.mode !== 'auto') {
-        const modeInstruction = request.config.mode === 'loop'
-          ? '\n\n**GENERATION MODE: LOOP** - Create a simple, focused pattern (2-4 layers). No .every() or .sometimes(). Make it easy to layer on top of with follow-up prompts.'
-          : '\n\n**GENERATION MODE: ARRANGEMENT** - Create a full arrangement with builds, drops, and variation. Use .every(), .sometimes(), and filter sweeps for evolution.';
-        userMessage += modeInstruction;
-      }
-      // Add remaining config
       const { mode, ...restConfig } = request.config;
       if (Object.keys(restConfig).length > 0) {
         userMessage += `\n\nConfiguration: ${JSON.stringify(restConfig, null, 2)}`;
@@ -196,7 +231,7 @@ export async function generateMusicCode(
 
     // Build messages array
     const messages: ChatMessage[] = [
-      { role: 'system', content: systemMessage },
+      { role: 'system', content: dynamicPrompt.systemPrompt },
       { role: 'user', content: userMessage },
     ];
 
@@ -256,11 +291,16 @@ export async function generateMusicCode(
       explanation = explanationMatch[1].trim();
     }
 
+    // Extract tempo info - both CPM (for Strudel) and BPM (for display)
+    const { cpm, bpm } = extractTempoInfo(code, defaults.tempo);
+
     return {
       code,
       explanation: explanation || 'Generated Strudel pattern',
       metadata: {
-        tempo: extractTempoFromCode(code) || request.config?.tempo || defaults.tempo,
+        tempo: bpm, // Legacy field, same as bpm
+        bpm,        // Perceived BPM for display
+        cpm,        // Raw CPM for Strudel
         instruments: extractInstruments(code),
       },
     };
@@ -375,24 +415,62 @@ function stripComments(code: string): string {
 }
 
 /**
- * Extract tempo from Strudel code
- * Looks for .cpm(value) or setcps(value) patterns
+ * Extract tempo info from Strudel code
+ * Returns both CPM (for Strudel) and BPM (for display)
+ *
+ * IMPORTANT: CPM (cycles per minute) is NOT the same as BPM!
+ * For a standard 4-beat pattern: BPM = CPM * 4
+ * Example: .cpm(30) with "bd ~ sd ~" (4 beats) = 120 BPM
  */
-function extractTempoFromCode(code: string): number | null {
-  // Match .cpm(number) - cycles per minute (same as BPM)
+function extractTempoInfo(code: string, defaultBpm: number): { cpm: number; bpm: number } {
+  // Match .cpm(number)
   const cpmMatch = code.match(/\.cpm\s*\(\s*(\d+(?:\.\d+)?)\s*\)/);
   if (cpmMatch) {
-    return Math.round(parseFloat(cpmMatch[1]));
+    const cpm = parseFloat(cpmMatch[1]);
+    const beatsPerCycle = estimateBeatsPerCycle(code);
+    const bpm = Math.round(cpm * beatsPerCycle);
+    return { cpm: Math.round(cpm), bpm };
   }
 
-  // Match setcps(number) - cycles per second, convert to BPM
+  // Match setcps(number) - cycles per second
   const cpsMatch = code.match(/setcps\s*\(\s*([\d.]+)\s*\)/);
   if (cpsMatch) {
     const cps = parseFloat(cpsMatch[1]);
-    return Math.round(cps * 60); // CPS to BPM
+    const cpm = cps * 60;
+    const beatsPerCycle = estimateBeatsPerCycle(code);
+    const bpm = Math.round(cpm * beatsPerCycle);
+    return { cpm: Math.round(cpm), bpm };
   }
 
-  return null;
+  // Default: assume 4 beats per cycle
+  const defaultCpm = Math.round(defaultBpm / 4);
+  return { cpm: defaultCpm, bpm: defaultBpm };
+}
+
+/**
+ * Estimate beats per cycle by analyzing the pattern structure
+ * Default to 4 for standard 4/4 time
+ */
+function estimateBeatsPerCycle(code: string): number {
+  // Check for half-time patterns (8 elements like "bd ~ ~ ~ ~ ~ sd ~")
+  // These are common in trap, dubstep, lo-fi
+  const halfTimePattern = /s\s*\(\s*["'][^"']*~[^"']*~[^"']*~[^"']*~[^"']*["']\s*\)/;
+  if (halfTimePattern.test(code)) {
+    // Count elements in the main pattern to verify
+    const mainPattern = code.match(/s\s*\(\s*["']([^"']+)["']\s*\)/);
+    if (mainPattern) {
+      const elements = mainPattern[1].split(/\s+/).length;
+      if (elements >= 8) return 8;
+    }
+  }
+
+  // Check for .fast(2) which doubles effective tempo
+  if (/\.fast\s*\(\s*2\s*\)/.test(code)) {
+    return 2; // Effectively doubles, so 2 beats per cycle
+  }
+
+  // Default: standard 4-beat patterns (most common)
+  return 4;
 }
 
 /**

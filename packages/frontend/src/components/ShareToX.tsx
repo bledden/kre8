@@ -15,6 +15,7 @@ interface XSession {
   refreshToken: string;
   username: string;
   expiresAt: number;
+  userId: string;
 }
 
 const X_SESSION_KEY = 'kre8_x_session';
@@ -67,9 +68,25 @@ export function ShareToX({ code: _code, description, videoBlob }: ShareToXProps)
     const authError = params.get('x_auth_error');
 
     if (authSuccess && username) {
-      // OAuth succeeded - for now, we'll prompt user to try sharing again
-      // In a full implementation, tokens would be stored server-side in session
-      setError(null);
+      const accessToken = params.get('access_token');
+      const refreshToken = params.get('refresh_token');
+      const expiresIn = params.get('expires_in');
+      const userId = params.get('user_id');
+
+      if (accessToken && refreshToken && expiresIn && userId) {
+        const newSession: XSession = {
+          accessToken,
+          refreshToken,
+          username,
+          expiresAt: Date.now() + parseInt(expiresIn) * 1000,
+          userId,
+        };
+        storeSession(newSession);
+        setSession(newSession);
+        setError(null);
+      } else {
+        setError('Missing token information in X authorization callback.');
+      }
       // Clear URL params
       window.history.replaceState({}, '', window.location.pathname);
     } else if (authError) {
@@ -216,8 +233,8 @@ export function ShareToX({ code: _code, description, videoBlob }: ShareToXProps)
 
       {/* Share Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-card rounded-xl p-6 max-w-lg w-full mx-4 shadow-2xl border border-border-primary">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50" onClick={() => setShowModal(false)}>
+          <div className="bg-card rounded-xl p-6 max-w-lg w-full mx-4 shadow-2xl border border-border-primary" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-text-primary flex items-center gap-2">
                 <Twitter size={24} />

@@ -139,6 +139,37 @@ export function isRecording(): boolean {
 }
 
 /**
+ * Force stop any active recording and release microphone
+ * Use this for cleanup on component unmount or error recovery
+ */
+export function forceStopRecording(): void {
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    try {
+      mediaRecorder.stop();
+    } catch (e) {
+      // Ignore errors during force stop
+    }
+  }
+
+  // Always stop stream tracks to release microphone
+  if (stream) {
+    stream.getTracks().forEach(track => {
+      track.stop();
+      console.log('[AudioRecorder] Force stopped track:', track.kind);
+    });
+    stream = null;
+  }
+
+  if (destinationNode) {
+    destinationNode = null;
+  }
+
+  mediaRecorder = null;
+  audioChunks = [];
+  console.log('[AudioRecorder] Force stopped and cleaned up');
+}
+
+/**
  * Get current recording duration in milliseconds
  */
 export function getRecordingDuration(): number {

@@ -6,13 +6,15 @@ export interface StrudelCode {
   code: string;
   explanation?: string;
   metadata?: {
-    tempo?: number;
+    tempo?: number;      // Deprecated: use bpm instead
+    bpm?: number;        // Perceived BPM (for display)
+    cpm?: number;        // Cycles per minute (for Strudel)
     instruments?: string[];
     duration?: number;
   };
 }
 
-export type GenerationMode = 'auto' | 'loop' | 'arrangement';
+export type GenerationMode = 'auto' | 'loop' | 'arrangement' | 'layer';
 
 export interface MusicConfig {
   tempo?: number;
@@ -39,12 +41,20 @@ export interface UserContext {
   localTime?: string;
 }
 
+export interface Layer {
+  id: string;
+  code: string;
+  name: string;
+  muted: boolean;
+}
+
 export interface GenerationRequest {
   prompt: string;
   config?: MusicConfig;
   conversationHistory?: Message[];
   refinement?: boolean;
   context?: UserContext;
+  existingLayers?: Layer[];
 }
 
 export interface AIServiceResponse {

@@ -1,19 +1,22 @@
 import { useState, useRef, useEffect } from 'react';
-import { Mic, MicOff, Upload, Send, Loader2, Radio, Repeat, Music } from 'lucide-react';
+import { Mic, MicOff, Upload, Send, Loader2, Radio, Repeat, Music, Layers } from 'lucide-react';
 import { useAppStore } from '../stores/appStore';
 import { musicApi, transcriptionApi } from '../services/api';
-import { startRecording, stopRecording } from '../services/audioRecorder';
-import { executeCode, setPatternBaseTempo } from '../services/strudelService';
+import { startRecording, stopRecording, forceStopRecording } from '../services/audioRecorder';
+import { executeCode, setPatternBaseTempo, executeLayers } from '../services/strudelService';
 import { useVoiceChat } from '../hooks/useVoiceChat';
 import type { UserContext, GenerationMode } from '@kre8/shared';
 
 export default function InputPanel() {
-  const [prompt, setPrompt] = useState('');
   const [isRecordingAudio, setIsRecordingAudio] = useState(false);
   const [userContext, setUserContext] = useState<UserContext | null>(null);
   const [generationMode, setGenerationMode] = useState<GenerationMode>('auto');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { setCurrentCode, setLoading, setError, addMessage, currentCode, setPlayback } = useAppStore();
+  const { setCurrentCode, setLoading, setError, addMessage, currentCode, setPlayback, inputMessage, setInputMessage, layers, addLayer } = useAppStore();
+
+  // Use inputMessage from store as the prompt
+  const prompt = inputMessage;
+  const setPrompt = setInputMessage;
 
   // Voice Chat (real-time conversation with Grok)
   const {
@@ -29,6 +32,11 @@ export default function InputPanel() {
   // Context is always passed to Grok - Grok decides when to use it based on the prompt
   useEffect(() => {
     gatherUserContext();
+
+    // Cleanup: ensure microphone is released on unmount
+    return () => {
+      forceStopRecording();
+    };
   }, []);
 
   async function gatherUserContext() {
@@ -90,11 +98,13 @@ export default function InputPanel() {
     setLoading(true);
     setError(undefined);
 
+    const isLayerMode = generationMode === 'layer';
+
     try {
       // Add user message
       addMessage({
         role: 'user',
-        content: prompt,
+        content: isLayerMode ? `[+Layer] ${prompt}` : prompt,
         timestamp: new Date(),
       });
 
@@ -103,9 +113,14 @@ export default function InputPanel() {
       const request: Parameters<typeof musicApi.generate>[0] = {
         prompt,
         conversationHistory: useAppStore.getState().conversation,
-        refinement: !!currentCode,
+        refinement: !isLayerMode && !!currentCode,
         config: generationMode !== 'auto' ? { mode: generationMode } : undefined,
       };
+
+      // For layer mode, pass existing layers so Grok can create complementary content
+      if (isLayerMode && layers.length > 0) {
+        request.existingLayers = layers;
+      }
 
       // Always pass context - Grok intelligently decides when to use it
       if (userContext) {
@@ -130,15 +145,31 @@ export default function InputPanel() {
         timestamp: new Date(),
       });
 
-      // Set current code and execute (auto-play)
-      setCurrentCode(result);
+      // Use BPM for display, CPM for Strudel internals
+      const displayBpm = result.metadata?.bpm || result.metadata?.tempo || 120;
+      const strudelCpm = result.metadata?.cpm || Math.round(displayBpm / 4);
+      setPatternBaseTempo(strudelCpm);
 
-      // Set base tempo from the generated code's metadata for relative tempo adjustments
-      const generatedTempo = result.metadata?.tempo || 120;
-      setPatternBaseTempo(generatedTempo);
+      if (isLayerMode) {
+        // Layer mode: Add as new layer and execute all layers together
+        const newLayer = {
+          id: `layer-${Date.now()}`,
+          code: result.code,
+          name: prompt.slice(0, 20) + (prompt.length > 20 ? '...' : ''),
+          muted: false,
+        };
+        addLayer(newLayer);
 
-      await executeCode(result);
-      setPlayback({ isPlaying: true, tempo: generatedTempo });
+        // Get updated layers including the new one
+        const updatedLayers = [...layers, newLayer];
+        await executeLayers(updatedLayers, strudelCpm);
+        setPlayback({ isPlaying: true, tempo: displayBpm });
+      } else {
+        // Normal mode: Replace current code and execute
+        setCurrentCode(result);
+        await executeCode(result);
+        setPlayback({ isPlaying: true, tempo: displayBpm });
+      }
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to generate music');
     } finally {
@@ -150,9 +181,9 @@ export default function InputPanel() {
   const handleVoiceRecord = async () => {
     if (isRecordingAudio) {
       // Stop recording
+      setIsRecordingAudio(false); // Update UI immediately
       try {
         const audioBlob = await stopRecording();
-        setIsRecordingAudio(false);
         setLoading(true);
 
         // Transcribe
@@ -167,7 +198,10 @@ export default function InputPanel() {
         }, 100);
       } catch (error) {
         setError(error instanceof Error ? error.message : 'Failed to transcribe audio');
-        setIsRecordingAudio(false);
+        // Ensure microphone is released even on error
+        forceStopRecording();
+      } finally {
+        setLoading(false);
       }
     } else {
       // Start recording
@@ -176,6 +210,7 @@ export default function InputPanel() {
         setIsRecordingAudio(true);
       } catch (error) {
         setError(error instanceof Error ? error.message : 'Microphone access denied');
+        forceStopRecording(); // Ensure cleanup on error
       }
     }
   };
@@ -200,20 +235,6 @@ export default function InputPanel() {
   };
 
   const { isLoading } = useAppStore();
-
-  // Genre suggestion tags
-  const GENRE_SUGGESTIONS = [
-    { label: 'Lo-fi', prompt: 'Create a chill lo-fi hip-hop beat' },
-    { label: 'Techno', prompt: 'Make a driving techno track' },
-    { label: 'Trap', prompt: 'Create a hard-hitting trap beat' },
-    { label: 'House', prompt: 'Make a groovy deep house track' },
-    { label: 'Ambient', prompt: 'Create a peaceful ambient soundscape' },
-    { label: 'D&B', prompt: 'Make an energetic drum and bass beat' },
-  ];
-
-  const handleGenreClick = (genrePrompt: string) => {
-    setPrompt(genrePrompt);
-  };
 
   // Toggle voice chat
   const handleVoiceChatToggle = async () => {
@@ -294,23 +315,9 @@ export default function InputPanel() {
           />
         </div>
 
-        {/* Genre Suggestions & Mode Selector */}
+        {/* Mode Selector */}
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-text-secondary mr-1">Try:</span>
-          {GENRE_SUGGESTIONS.map((genre) => (
-            <button
-              key={genre.label}
-              type="button"
-              onClick={() => handleGenreClick(genre.prompt)}
-              disabled={isLoading || isRecordingAudio}
-              className="text-xs px-2 py-1 rounded-full bg-x-blue/20 text-x-blue hover:bg-x-blue/30 transition-colors disabled:opacity-50"
-            >
-              {genre.label}
-            </button>
-          ))}
-
-          {/* Mode Selector - appears on the right */}
-          <div className="ml-auto flex items-center gap-1">
+          <div className="flex items-center gap-1">
             <span className="text-xs text-text-secondary mr-1">Mode:</span>
             <button
               type="button"
@@ -340,7 +347,7 @@ export default function InputPanel() {
             <button
               type="button"
               onClick={() => setGenerationMode('arrangement')}
-              className={`text-xs px-2 py-1 rounded-r-full border transition-colors flex items-center gap-1 ${
+              className={`text-xs px-2 py-1 border-y transition-colors flex items-center gap-1 ${
                 generationMode === 'arrangement'
                   ? 'bg-green-500/30 text-green-300 border-green-500/50'
                   : 'bg-surface-elevated text-text-secondary border-border-primary hover:bg-surface-elevated/80'
@@ -350,7 +357,25 @@ export default function InputPanel() {
               <Music className="w-3 h-3" />
               Song
             </button>
+            <button
+              type="button"
+              onClick={() => setGenerationMode('layer')}
+              className={`text-xs px-2 py-1 rounded-r-full border transition-colors flex items-center gap-1 ${
+                generationMode === 'layer'
+                  ? 'bg-orange-500/30 text-orange-300 border-orange-500/50'
+                  : 'bg-surface-elevated text-text-secondary border-border-primary hover:bg-surface-elevated/80'
+              }`}
+              title="Add a new layer to existing sounds"
+            >
+              <Layers className="w-3 h-3" />
+              +Layer
+            </button>
           </div>
+          {layers.length > 0 && (
+            <span className="text-xs text-orange-400">
+              {layers.length} layer{layers.length !== 1 ? 's' : ''} active
+            </span>
+          )}
         </div>
 
         <div className="flex flex-wrap gap-2">
