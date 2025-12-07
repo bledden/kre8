@@ -11,9 +11,7 @@ Quick reference to all project documentation files.
 | Document | Purpose | Read Time |
 |----------|---------|-----------|
 | [README.md](README.md) | Main project overview and setup instructions | 10 min |
-| [docs/getting-started/QUICK_START.md](docs/getting-started/QUICK_START.md) | Quick start for Claude (prompt engineering focus) | 3 min |
-| [docs/getting-started/SETUP.md](docs/getting-started/SETUP.md) | Detailed setup and development guide | 15 min |
-| [docs/getting-started/XAI_QUICK_START.md](docs/getting-started/XAI_QUICK_START.md) | xAI/Grok setup guide | 5 min |
+| [docs/getting-started/SETUP.md](docs/getting-started/SETUP.md) | Complete setup guide (includes xAI/Grok setup) | 15 min |
 
 **Start here if**: You're new to the project → Read [README.md](README.md) first.
 
@@ -21,17 +19,11 @@ Quick reference to all project documentation files.
 
 ## 👥 Handoff Documents
 
-| Document | Purpose | Audience |
-|----------|---------|----------|
-| [docs/handoffs/CLAUDE_HANDOFF.md](docs/handoffs/CLAUDE_HANDOFF.md) | Composer's handoff to Claude with complete file inventory | Claude |
-| [docs/handoffs/HANDOFF_SUMMARY.md](docs/handoffs/HANDOFF_SUMMARY.md) | Claude's original handoff summary for Composer | Composer |
-| [docs/handoffs/CLAUDE_PHASE2_COMPLETE.md](docs/handoffs/CLAUDE_PHASE2_COMPLETE.md) | Claude's Phase 2 completion summary | Both |
-| [docs/handoffs/PHASE2_INTEGRATION.md](docs/handoffs/PHASE2_INTEGRATION.md) | Phase 2 integration details | Both |
-| [docs/handoffs/STATUS_COMPARISON.md](docs/handoffs/STATUS_COMPARISON.md) | Status comparison analysis | Both |
+| Document | Purpose |
+|----------|---------|
+| [docs/handoffs/HANDOFF_HISTORY.md](docs/handoffs/HANDOFF_HISTORY.md) | Consolidated history of all project handoffs |
 
-**Start here if**:
-- Composer needs to catch up → Read [docs/handoffs/CLAUDE_HANDOFF.md](docs/handoffs/CLAUDE_HANDOFF.md)
-- Claude needs context → Read [docs/getting-started/QUICK_START.md](docs/getting-started/QUICK_START.md)
+**Note**: Original detailed handoff documents preserved in git history.
 
 ---
 
@@ -40,9 +32,7 @@ Quick reference to all project documentation files.
 | Document | Purpose | Read Time |
 |----------|---------|-----------|
 | [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md) | Complete technical architecture and design decisions | 30 min |
-| [docs/architecture/PROJECT_SUMMARY.md](docs/architecture/PROJECT_SUMMARY.md) | High-level project summary | 5 min |
 | [docs/architecture/CODEBASE_EVALUATION.md](docs/architecture/CODEBASE_EVALUATION.md) | Code quality and architecture evaluation | 20 min |
-| [docs/status/GIT_COMMIT_SUMMARY.md](docs/status/GIT_COMMIT_SUMMARY.md) | Git commit history and changelog | 5 min |
 
 **Start here if**: You need to understand the technical implementation → [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md)
 
@@ -81,12 +71,11 @@ Quick reference to all project documentation files.
 
 | Document | Purpose | Status |
 |----------|---------|--------|
-| [docs/integration/INTEGRATION_PLAN.md](docs/integration/INTEGRATION_PLAN.md) | Integration strategy and approach | ✅ Complete |
-| [docs/integration/INTEGRATION_SUMMARY.md](docs/integration/INTEGRATION_SUMMARY.md) | Integration summary | ✅ Complete |
-| [docs/integration/INTEGRATION_COMPLETE.md](docs/integration/INTEGRATION_COMPLETE.md) | Integration completion status | ✅ Complete |
+| [docs/integration/INTEGRATION.md](docs/integration/INTEGRATION.md) | Complete integration guide (merged from 3 files) | ✅ Complete |
 | [docs/planning/IMPLEMENTATION_PLAN.md](docs/planning/IMPLEMENTATION_PLAN.md) | Complete implementation plan (25 improvements) | ✅ Complete |
 | [docs/planning/CONTEXT_GAPS_ANALYSIS.md](docs/planning/CONTEXT_GAPS_ANALYSIS.md) | Context-aware generation gap analysis | ✅ Complete |
 | [docs/planning/ACTION_PLAN.md](docs/planning/ACTION_PLAN.md) | Action items and tasks | ✅ Complete |
+| [docs/planning/PLAN.md](docs/planning/PLAN.md) | Strategic positioning and roadmap | ✅ Complete |
 
 ---
 
@@ -94,9 +83,7 @@ Quick reference to all project documentation files.
 
 | Document | Purpose |
 |----------|---------|
-| [docs/status/PROJECT_STATUS.md](docs/status/PROJECT_STATUS.md) | Current project status and capabilities |
-| [docs/status/GIT_COMMIT_SUMMARY.md](docs/status/GIT_COMMIT_SUMMARY.md) | Git commit history and changelog |
-| [docs/status/DEPENDENCY_FIXES.md](docs/status/DEPENDENCY_FIXES.md) | Dependency fixes log |
+| [docs/status/PROJECT_STATUS.md](docs/status/PROJECT_STATUS.md) | Current project status and capabilities (merged from PROJECT_SUMMARY) |
 
 ---
 
